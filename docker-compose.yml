@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # Serviço do Banco de Dados PostgreSQL
+  db:
+    image: postgres:15 # Usa a imagem oficial do PostgreSQL na versão 15
+    container_name: inspira-postgres
+    environment:
+      POSTGRES_DB: InspiraDB
+      POSTGRES_USER: inspira_user
+      POSTGRES_PASSWORD: inspira_password
+    volumes:
+      - inspira-data:/var/lib/postgresql/data # Persiste os dados do banco
+    ports:
+      - "5432:5432" # Mapeia a porta do contêiner para a porta da sua máquina
+
+  # Serviço da sua API .NET
+  api:
+    container_name: inspira-api
+    build:
+      context: . # O contexto é a pasta atual (raiz da solução)
+      dockerfile: inspira-backend.Api/Dockerfile # O caminho para o seu Dockerfile
+    ports:
+      - "8000:8080" # Mapeia a porta 8000 da sua máquina para a porta 8080 do contêiner
+    depends_on:
+      - db # Garante que o contêiner do banco suba ANTES do contêiner da API
+    environment:
+      # Sobrescreve a connection string para usar a rede do Docker
+      - ConnectionStrings__InspiraDbConnection=Host=db;Port=5432;Database=InspiraDB;Username=inspira_user;Password=inspira_password
+
+volumes:
+  # Define o volume nomeado para persistir os dados do banco
+  inspira-data:
