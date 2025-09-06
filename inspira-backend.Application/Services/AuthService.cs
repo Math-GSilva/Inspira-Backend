@@ -1,0 +1,74 @@
+﻿using inspira_backend.Application.DTOs;
+using inspira_backend.Application.Interfaces;
+using inspira_backend.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace inspira_backend.Application.Services
+{
+    public class AuthService : IAuthService
+    {
+        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
+
+        public AuthService(IUsuarioRepository usuarioRepository, IJwtTokenGenerator jwtTokenGenerator)
+        {
+            _usuarioRepository = usuarioRepository;
+            _jwtTokenGenerator = jwtTokenGenerator;
+        }
+
+        public async Task<LoginResponseDto?> RegisterAsync(RegisterRequestDto request)
+        {
+            if (await _usuarioRepository.GetByUsernameAsync(request.Username) != null)
+            {
+                // Lançar exceção ou retornar null/indicador de erro
+                return null; // "Usuário já existe"
+            }
+
+            if (await _usuarioRepository.GetByEmailAsync(request.Email) != null)
+            {
+                return null; // "E-mail já cadastrado"
+            }
+
+            // Hash da senha
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+            var usuario = new Usuario
+            {
+                NomeCompleto = request.Username, // Pode ser melhorado para pedir nome completo no DTO
+                NomeUsuario = request.Username,
+                Email = request.Email,
+                SenhaHash = passwordHash,
+                TipoUsuario = request.Role,
+                DataCriacao = DateTime.UtcNow,
+                DataAtualizacao = DateTime.UtcNow
+            };
+
+            await _usuarioRepository.AddAsync(usuario);
+
+            return await LoginAsync(new LoginRequestDto { Username = request.Username, Password = request.Password });
+        }
+
+        public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request)
+        {
+            var usuario = await _usuarioRepository.GetByUsernameAsync(request.Username);
+
+            if (usuario == null || !BCrypt.Net.BCrypt.Verify(request.Password, usuario.SenhaHash))
+            {
+                return null; // "Usuário ou senha inválidos"
+            }
+
+            var token = _jwtTokenGenerator.GenerateToken(usuario);
+
+            return new LoginResponseDto
+            {
+                UserId = usuario.Id,
+                Username = usuario.NomeUsuario,
+                Token = token
+            };
+        }
+    }
+}
