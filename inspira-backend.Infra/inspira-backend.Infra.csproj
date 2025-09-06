@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\inspira-backend.Application\inspira-backend.Application.csproj" />
     <ProjectReference Include="..\inspira-backend.Domain\inspira-backend.Domain.csproj" />
   </ItemGroup>
 
