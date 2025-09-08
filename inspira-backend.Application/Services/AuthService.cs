@@ -1,6 +1,7 @@
 ﻿using inspira_backend.Application.DTOs;
 using inspira_backend.Application.Interfaces;
 using inspira_backend.Domain.Entities;
+using inspira_backend.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

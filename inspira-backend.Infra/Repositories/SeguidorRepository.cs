@@ -1,0 +1,40 @@
+﻿using inspira_backend.Domain.Entities;
+using inspira_backend.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace inspira_backend.Infra.Repositories
+{
+    public class SeguidorRepository : ISeguidorRepository
+    {
+        private readonly InspiraDbContext _context;
+
+        public SeguidorRepository(InspiraDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Seguidor?> GetByFollowerAndFollowedAsync(Guid seguidorId, Guid seguidoId)
+        {
+            // Procura pela combinação exata de seguidor e seguido
+            return await _context.Seguidores
+                .FirstOrDefaultAsync(s => s.SeguidorId == seguidorId && s.SeguidoId == seguidoId);
+        }
+
+        public async Task AddAsync(Seguidor seguidor)
+        {
+            await _context.Seguidores.AddAsync(seguidor);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Seguidor seguidor)
+        {
+            _context.Seguidores.Remove(seguidor);
+            await _context.SaveChangesAsync();
+        }
+    }
+}
