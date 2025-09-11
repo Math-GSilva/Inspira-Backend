@@ -15,7 +15,6 @@ namespace inspira_backend.Domain.Entities
     [Table("Curtidas")]
     public class Curtida
     {
-        // Chaves Estrangeiras que formam a Chave Primária Composta
         [Required]
         public Guid UsuarioId { get; set; }
         [ForeignKey("UsuarioId")]

@@ -24,12 +24,11 @@ namespace inspira_backend.Infra.Repositories
             return await _context.Usuarios.FindAsync(id);
         }
 
-        // Sobrescrevendo o método para incluir os dados de seguidores
         public async Task<Usuario?> GetByUsernameAsync(string username)
         {
             return await _context.Usuarios
-                .Include(u => u.Seguidores) // Inclui a lista de pessoas que seguem este usuário
-                .Include(u => u.Seguindo)   // Inclui a lista de pessoas que este usuário segue
+                .Include(u => u.Seguidores)
+                .Include(u => u.Seguindo)
                 .FirstOrDefaultAsync(u => u.NomeUsuario == username);
         }
 

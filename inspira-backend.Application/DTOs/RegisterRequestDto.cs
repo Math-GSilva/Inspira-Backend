@@ -12,6 +12,10 @@ namespace inspira_backend.Application.DTOs
     {
         [Required]
         [MaxLength(50)]
+        public string CompleteName { get; set; }
+
+        [Required]
+        [MaxLength(50)]
         public string Username { get; set; }
 
         [Required]

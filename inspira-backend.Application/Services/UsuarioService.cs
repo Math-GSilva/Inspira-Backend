@@ -26,7 +26,6 @@ namespace inspira_backend.Application.Services
             var usuario = await _usuarioRepository.GetByUsernameAsync(username);
             if (usuario == null) return null;
 
-            // Mapear a entidade para o DTO de perfil
             return new UsuarioProfileDto
             {
                 Id = usuario.Id,
@@ -44,7 +43,6 @@ namespace inspira_backend.Application.Services
             var usuario = await _usuarioRepository.GetByIdAsync(userId);
             if (usuario == null) return null;
 
-            // Atualiza as propriedades do usuário com os dados do DTO
             usuario.NomeCompleto = dto.NomeCompleto;
             usuario.Bio = dto.Bio;
             usuario.UrlFotoPerfil = dto.UrlFotoPerfil;
@@ -52,14 +50,12 @@ namespace inspira_backend.Application.Services
 
             await _usuarioRepository.UpdateAsync(usuario);
 
-            // Retorna o perfil atualizado
             return await GetProfileByUsernameAsync(usuario.NomeUsuario);
         }
 
         public async Task<IEnumerable<UsuarioProfileDto>> SearchUsersAsync(string query)
         {
             var usuarios = await _usuarioRepository.SearchByUsernameAsync(query);
-            // Mapear a lista de entidades para uma lista de DTOs
             return usuarios.Select(u => new UsuarioProfileDto
             {
                 Id = u.Id,
@@ -73,16 +69,13 @@ namespace inspira_backend.Application.Services
 
         public async Task<bool> FollowUserAsync(Guid seguidorId, Guid seguidoId)
         {
-            // Regra de negócio: um usuário не pode seguir a si mesmo
             if (seguidorId == seguidoId) return false;
 
-            // Verifica se o usuário a ser seguido existe
             var userToFollow = await _usuarioRepository.GetByIdAsync(seguidoId);
             if (userToFollow == null) return false;
 
-            // Verifica se já não segue o usuário
             var existingFollow = await _seguidorRepository.GetByFollowerAndFollowedAsync(seguidorId, seguidoId);
-            if (existingFollow != null) return true; // Já segue, operação bem-sucedida
+            if (existingFollow != null) return true;
 
             var seguidor = new Seguidor
             {
@@ -97,7 +90,7 @@ namespace inspira_backend.Application.Services
         public async Task<bool> UnfollowUserAsync(Guid seguidorId, Guid seguidoId)
         {
             var existingFollow = await _seguidorRepository.GetByFollowerAndFollowedAsync(seguidorId, seguidoId);
-            if (existingFollow == null) return false; // Não seguia, não há o que fazer
+            if (existingFollow == null) return false;
 
             await _seguidorRepository.DeleteAsync(existingFollow);
             return true;

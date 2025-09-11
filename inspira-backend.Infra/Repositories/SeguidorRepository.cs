@@ -20,7 +20,6 @@ namespace inspira_backend.Infra.Repositories
 
         public async Task<Seguidor?> GetByFollowerAndFollowedAsync(Guid seguidorId, Guid seguidoId)
         {
-            // Procura pela combinação exata de seguidor e seguido
             return await _context.Seguidores
                 .FirstOrDefaultAsync(s => s.SeguidorId == seguidorId && s.SeguidoId == seguidoId);
         }

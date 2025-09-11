@@ -39,7 +39,7 @@ namespace inspira_backend.Application.Services
 
             var usuario = new Usuario
             {
-                NomeCompleto = request.Username, // Pode ser melhorado para pedir nome completo no DTO
+                NomeCompleto = request.CompleteName,
                 NomeUsuario = request.Username,
                 Email = request.Email,
                 SenhaHash = passwordHash,

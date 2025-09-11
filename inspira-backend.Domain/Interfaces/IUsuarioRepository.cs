@@ -15,6 +15,5 @@ namespace inspira_backend.Domain.Interfaces
         Task<IEnumerable<Usuario>> SearchByUsernameAsync(string username);
         Task AddAsync(Usuario usuario);
         Task UpdateAsync(Usuario usuario);
-        // O método Delete pode ser adicionado se necessário
     }
 }

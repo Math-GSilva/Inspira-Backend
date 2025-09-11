@@ -17,7 +17,6 @@ namespace inspira_backend.API.Controllers
             _usuarioService = usuarioService;
         }
 
-        // GET: api/usuarios/search?query=nome
         [HttpGet("search")]
         [Authorize]
         public async Task<IActionResult> Search([FromQuery] string query)
@@ -26,9 +25,8 @@ namespace inspira_backend.API.Controllers
             return Ok(usuarios);
         }
 
-        // GET: api/usuarios/nomedousuario
         [HttpGet("{username}")]
-        [AllowAnonymous] // Qualquer um pode ver um perfil
+        [AllowAnonymous]
         public async Task<IActionResult> GetProfile(string username)
         {
             var profile = await _usuarioService.GetProfileByUsernameAsync(username);
@@ -39,12 +37,10 @@ namespace inspira_backend.API.Controllers
             return Ok(profile);
         }
 
-        // PUT: api/usuarios/me
         [HttpPut("me")]
-        [Authorize] // O usuário precisa estar logado para atualizar seu perfil
+        [Authorize]
         public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateUsuarioDto dto)
         {
-            // Pega o ID do usuário a partir do token JWT
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             var updatedProfile = await _usuarioService.UpdateProfileAsync(userId, dto);
@@ -55,7 +51,6 @@ namespace inspira_backend.API.Controllers
             return Ok(updatedProfile);
         }
 
-        // POST: api/usuarios/{id}/follow
         [HttpPost("{id}/follow")]
         [Authorize]
         public async Task<IActionResult> Follow(Guid id)
@@ -70,7 +65,6 @@ namespace inspira_backend.API.Controllers
             return Ok(new { message = "Usuário seguido com sucesso." });
         }
 
-        // DELETE: api/usuarios/{id}/follow
         [HttpDelete("{id}/follow")]
         [Authorize]
         public async Task<IActionResult> Unfollow(Guid id)

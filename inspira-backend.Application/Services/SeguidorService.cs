@@ -26,7 +26,6 @@ namespace inspira_backend.Application.Services
                 return null; // Usuário não encontrado
             }
 
-            // Mapeia a lista de seguidores para o DTO de resumo
             return usuario.Seguidores.Select(s => new SeguidorResumoDto
             {
                 UsuarioId = s.SeguidorUsuario.Id,
@@ -44,7 +43,6 @@ namespace inspira_backend.Application.Services
                 return null; // Usuário não encontrado
             }
 
-            // Mapeia a lista de pessoas que o usuário segue para o DTO de resumo
             return usuario.Seguindo.Select(s => new SeguidorResumoDto
             {
                 UsuarioId = s.SeguidoUsuario.Id,
