@@ -43,21 +43,10 @@ namespace inspira_backend.Domain.Entities
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
 
         public DateTime DataAtualizacao { get; set; } = DateTime.UtcNow;
-
-        // Propriedades de Navegação
-        // Um artista pode ter várias obras publicadas.
         public virtual ICollection<ObraDeArte> ObrasPublicadas { get; set; } = new List<ObraDeArte>();
-
-        // Um usuário pode ter várias curtidas.
         public virtual ICollection<Curtida> Curtidas { get; set; } = new List<Curtida>();
-
-        // Um usuário pode fazer vários comentários.
         public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
-
-        // Lista de usuários que ESTE usuário segue.
         public virtual ICollection<Seguidor> Seguindo { get; set; } = new List<Seguidor>();
-
-        // Lista de usuários que seguem ESTE usuário.
         public virtual ICollection<Seguidor> Seguidores { get; set; } = new List<Seguidor>();
     }
 }

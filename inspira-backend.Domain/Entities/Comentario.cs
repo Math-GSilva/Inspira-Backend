@@ -22,7 +22,6 @@ namespace inspira_backend.Domain.Entities
 
         public DateTime DataComentario { get; set; } = DateTime.UtcNow;
 
-        // Chaves Estrangeiras e Propriedades de Navegação
         [Required]
         public Guid UsuarioId { get; set; }
         [ForeignKey("UsuarioId")]
@@ -32,8 +31,6 @@ namespace inspira_backend.Domain.Entities
         public Guid ObraDeArteId { get; set; }
         [ForeignKey("ObraDeArteId")]
         public virtual ObraDeArte ObraDeArte { get; set; }
-
-        // Auto-relacionamento para respostas de comentários
         public Guid? ComentarioPaiId { get; set; }
         [ForeignKey("ComentarioPaiId")]
         public virtual Comentario? ComentarioPai { get; set; }
