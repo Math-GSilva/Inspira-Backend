@@ -19,12 +19,25 @@ builder.Services.AddDbContext<InspiraDbContext>(options =>
     options.UseNpgsql(connectionString, b =>
         b.MigrationsAssembly("inspira-backend.Infra")));
 
+// 2. Injeção de Dependência (DI)
+// =================================================================
+// --- Repositórios (Infraestrutura implementa contratos do Domínio) ---
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IObraDeArteRepository, ObraDeArteRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IComentarioRepository, ComentarioRepository>();
+builder.Services.AddScoped<ICurtidaRepository, CurtidaRepository>();
 builder.Services.AddScoped<ISeguidorRepository, SeguidorRepository>();
-builder.Services.AddScoped<ISeguidorService, SeguidorService>();
-builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+// --- Serviços de Infraestrutura (implementam contratos da Aplicação) ---
+builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+
+// --- Serviços de Aplicação (orquestram a lógica de negócio) ---
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IObraDeArteService, ObraDeArteService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ISeguidorService, SeguidorService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["Secret"];
