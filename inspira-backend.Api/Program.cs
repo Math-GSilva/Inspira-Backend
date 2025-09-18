@@ -1,5 +1,6 @@
 using inspira_backend.Application.Interfaces;
 using inspira_backend.Application.Services;
+using inspira_backend.Domain.Interfaces;
 using inspira_backend.Infra;
 using inspira_backend.Infra.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<InspiraDbContext>(options =>
         b.MigrationsAssembly("inspira-backend.Infra")));
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ISeguidorRepository, SeguidorRepository>();
+builder.Services.AddScoped<ISeguidorService, SeguidorService>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 

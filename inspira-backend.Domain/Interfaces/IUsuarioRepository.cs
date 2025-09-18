@@ -5,13 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace inspira_backend.Application.Interfaces
+namespace inspira_backend.Domain.Interfaces
 {
     public interface IUsuarioRepository
     {
+        Task<Usuario?> GetByIdAsync(Guid id);
         Task<Usuario?> GetByUsernameAsync(string username);
         Task<Usuario?> GetByEmailAsync(string email);
+        Task<IEnumerable<Usuario>> SearchByUsernameAsync(string username);
         Task AddAsync(Usuario usuario);
-        Task<Usuario?> GetByIdAsync(Guid id);
+        Task UpdateAsync(Usuario usuario);
     }
 }

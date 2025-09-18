@@ -43,10 +43,15 @@ namespace inspira_backend.Domain.Entities
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
 
         public DateTime DataAtualizacao { get; set; } = DateTime.UtcNow;
+
         public virtual ICollection<ObraDeArte> ObrasPublicadas { get; set; } = new List<ObraDeArte>();
+
         public virtual ICollection<Curtida> Curtidas { get; set; } = new List<Curtida>();
+
         public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
+
         public virtual ICollection<Seguidor> Seguindo { get; set; } = new List<Seguidor>();
+
         public virtual ICollection<Seguidor> Seguidores { get; set; } = new List<Seguidor>();
     }
 }
