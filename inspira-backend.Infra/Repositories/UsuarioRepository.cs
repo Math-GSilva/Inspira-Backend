@@ -1,5 +1,6 @@
 ﻿using inspira_backend.Application.Interfaces;
 using inspira_backend.Domain.Entities;
+using inspira_backend.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,14 +19,31 @@ namespace inspira_backend.Infra.Repositories
             _context = context;
         }
 
+        public async Task<Usuario?> GetByIdAsync(Guid id)
+        {
+            return await _context.Usuarios.FindAsync(id);
+        }
+
         public async Task<Usuario?> GetByUsernameAsync(string username)
         {
-            return await _context.Usuarios.FirstOrDefaultAsync(u => u.NomeUsuario == username);
+            return await _context.Usuarios
+                .Include(u => u.Seguidores)
+                .Include(u => u.Seguindo)
+                .FirstOrDefaultAsync(u => u.NomeUsuario == username);
         }
 
         public async Task<Usuario?> GetByEmailAsync(string email)
         {
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<IEnumerable<Usuario>> SearchByUsernameAsync(string username)
+        {
+            return await _context.Usuarios
+                .Include(u => u.Seguidores)
+                .Include(u => u.Seguindo)
+                .Where(u => u.NomeUsuario.Contains(username))
+                .ToListAsync();
         }
 
         public async Task AddAsync(Usuario usuario)
@@ -34,9 +52,10 @@ namespace inspira_backend.Infra.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Usuario?> GetByIdAsync(Guid id)
+        public async Task UpdateAsync(Usuario usuario)
         {
-            return await _context.Usuarios.FindAsync(id);
+            _context.Usuarios.Update(usuario);
+            await _context.SaveChangesAsync();
         }
     }
 }

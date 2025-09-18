@@ -15,7 +15,7 @@ namespace inspira_backend.Domain.Entities
     public class Categoria
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Indica que o ID é auto-incrementável
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -24,8 +24,6 @@ namespace inspira_backend.Domain.Entities
 
         public string? Descricao { get; set; }
 
-        // Propriedade de Navegação
-        // Uma categoria pode conter várias obras de arte.
         public virtual ICollection<ObraDeArte> ObrasDeArte { get; set; } = new List<ObraDeArte>();
     }
 }

@@ -30,7 +30,6 @@ namespace inspira_backend.Domain.Entities
 
         public bool Visivel { get; set; } = true;
 
-        // Chaves Estrangeiras e Propriedades de Navegação
         [Required]
         public Guid ArtistaId { get; set; }
         [ForeignKey("ArtistaId")]
@@ -41,10 +40,8 @@ namespace inspira_backend.Domain.Entities
         [ForeignKey("CategoriaId")]
         public virtual Categoria Categoria { get; set; }
 
-        // Uma obra pode ter várias curtidas.
         public virtual ICollection<Curtida> Curtidas { get; set; } = new List<Curtida>();
 
-        // Uma obra pode ter vários comentários.
         public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
     }
 }

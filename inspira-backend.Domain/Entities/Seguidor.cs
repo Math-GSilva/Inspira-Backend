@@ -15,13 +15,10 @@ namespace inspira_backend.Domain.Entities
     [Table("Seguidores")]
     public class Seguidor
     {
-        // Chaves Estrangeiras que formam a Chave Primária Composta
-        // Representa o usuário que está seguindo.
         [Required]
         public Guid SeguidorId { get; set; }
         public virtual Usuario SeguidorUsuario { get; set; }
 
-        // Representa o usuário que está sendo seguido.
         [Required]
         public Guid SeguidoId { get; set; }
         public virtual Usuario SeguidoUsuario { get; set; }

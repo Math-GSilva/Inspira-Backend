@@ -1,6 +1,7 @@
 ﻿using inspira_backend.Application.DTOs;
 using inspira_backend.Application.Interfaces;
 using inspira_backend.Domain.Entities;
+using inspira_backend.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace inspira_backend.Application.Services
 
             var usuario = new Usuario
             {
-                NomeCompleto = request.Username, // Pode ser melhorado para pedir nome completo no DTO
+                NomeCompleto = request.CompleteName,
                 NomeUsuario = request.Username,
                 Email = request.Email,
                 SenhaHash = passwordHash,
