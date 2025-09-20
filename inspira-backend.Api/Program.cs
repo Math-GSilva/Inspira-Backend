@@ -11,17 +11,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Pega a string de conexão do appsettings.json
 var connectionString = builder.Configuration.GetConnectionString("InspiraDbConnection");
 
-// 2. Adiciona o serviço do DbContext ao container de injeção de dependência
 builder.Services.AddDbContext<InspiraDbContext>(options =>
     options.UseNpgsql(connectionString, b =>
         b.MigrationsAssembly("inspira-backend.Infra")));
 
-// 2. Injeção de Dependência (DI)
-// =================================================================
-// --- Repositórios (Infraestrutura implementa contratos do Domínio) ---
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IObraDeArteRepository, ObraDeArteRepository>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
@@ -29,10 +24,8 @@ builder.Services.AddScoped<IComentarioRepository, ComentarioRepository>();
 builder.Services.AddScoped<ICurtidaRepository, CurtidaRepository>();
 builder.Services.AddScoped<ISeguidorRepository, SeguidorRepository>();
 
-// --- Serviços de Infraestrutura (implementam contratos da Aplicação) ---
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 
-// --- Serviços de Aplicação (orquestram a lógica de negócio) ---
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IObraDeArteService, ObraDeArteService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
@@ -66,7 +59,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    // 1. Define o esquema de segurança (Bearer token)
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -77,7 +69,6 @@ builder.Services.AddSwaggerGen(options =>
         Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\""
     });
 
-    // 2. Adiciona o requisito de segurança aos endpoints que precisam de autorização
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -104,7 +95,7 @@ if (true)
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); // <-- Importante: antes do UseAuthorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
