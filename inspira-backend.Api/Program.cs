@@ -31,6 +31,8 @@ builder.Services.AddScoped<IObraDeArteService, ObraDeArteService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ISeguidorService, SeguidorService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<ICurtidaService, CurtidaService>();
+builder.Services.AddScoped<IComentarioService, ComentarioService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var secretKey = jwtSettings["Secret"];

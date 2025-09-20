@@ -9,8 +9,10 @@ namespace inspira_backend.Domain.Interfaces
 {
     public interface IComentarioRepository
     {
-        Task<Comentario?> GetByIdAsync(int id);
+        Task<Comentario?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Comentario>> GetByObraDeArteIdAsync(Guid obraDeArteId);
         Task AddAsync(Comentario comentario);
+        Task UpdateAsync(Comentario comentario);
         Task DeleteAsync(Comentario comentario);
     }
 }
