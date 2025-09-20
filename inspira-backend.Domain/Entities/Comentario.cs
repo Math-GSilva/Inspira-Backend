@@ -31,7 +31,6 @@ namespace inspira_backend.Domain.Entities
         public Guid ObraDeArteId { get; set; }
         [ForeignKey("ObraDeArteId")]
         public virtual ObraDeArte ObraDeArte { get; set; }
-
         public Guid? ComentarioPaiId { get; set; }
         [ForeignKey("ComentarioPaiId")]
         public virtual Comentario? ComentarioPai { get; set; }

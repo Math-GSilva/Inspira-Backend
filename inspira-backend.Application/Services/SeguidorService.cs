@@ -23,7 +23,7 @@ namespace inspira_backend.Application.Services
             var usuario = await _usuarioRepository.GetByIdAsync(usuarioId);
             if (usuario == null)
             {
-                return null; // Usuário não encontrado
+                return null;
             }
 
             return usuario.Seguidores.Select(s => new SeguidorResumoDto
@@ -40,7 +40,7 @@ namespace inspira_backend.Application.Services
             var usuario = await _usuarioRepository.GetByIdAsync(usuarioId);
             if (usuario == null)
             {
-                return null; // Usuário não encontrado
+                return null;
             }
 
             return usuario.Seguindo.Select(s => new SeguidorResumoDto

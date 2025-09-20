@@ -14,34 +14,23 @@ namespace inspira_backend.Domain.Entities
     [Table("ObrasDeArte")]
     public class ObraDeArte
     {
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
-
-        [Required]
-        [MaxLength(200)]
+        public Guid Id { get; set; }
         public string Titulo { get; set; }
+        public string Descricao { get; set; }
+        public DateTime DataPublicacao { get; set; }
 
-        public string? Descricao { get; set; }
+        public string? UrlMidia { get; set; }
 
-        [Required]
-        public string UrlMidia { get; set; }
+        public byte[]? DadosMidia { get; set; }
+        public string? TipoConteudoMidia { get; set; }
 
-        public DateTime DataPublicacao { get; set; } = DateTime.UtcNow;
+        public Guid UsuarioId { get; set; }
+        public Usuario? Usuario { get; set; }
 
-        public bool Visivel { get; set; } = true;
+        public Guid CategoriaId { get; set; }
+        public Categoria? Categoria { get; set; }
 
-        [Required]
-        public Guid ArtistaId { get; set; }
-        [ForeignKey("ArtistaId")]
-        public virtual Usuario Artista { get; set; }
-
-        [Required]
-        public int CategoriaId { get; set; }
-        [ForeignKey("CategoriaId")]
-        public virtual Categoria Categoria { get; set; }
-
-        public virtual ICollection<Curtida> Curtidas { get; set; } = new List<Curtida>();
-
-        public virtual ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
+        public ICollection<Comentario> Comentarios { get; set; } = new List<Comentario>();
+        public ICollection<Curtida> Curtidas { get; set; } = new List<Curtida>();
     }
 }

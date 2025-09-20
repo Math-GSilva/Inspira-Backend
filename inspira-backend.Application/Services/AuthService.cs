@@ -25,7 +25,6 @@ namespace inspira_backend.Application.Services
         {
             if (await _usuarioRepository.GetByUsernameAsync(request.Username) != null)
             {
-                // Lançar exceção ou retornar null/indicador de erro
                 return null; // "Usuário já existe"
             }
 
@@ -34,7 +33,6 @@ namespace inspira_backend.Application.Services
                 return null; // "E-mail já cadastrado"
             }
 
-            // Hash da senha
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             var usuario = new Usuario

@@ -16,14 +16,13 @@ namespace inspira_backend.Domain.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [MaxLength(100)]
         public string Nome { get; set; }
 
         public string? Descricao { get; set; }
-
         public virtual ICollection<ObraDeArte> ObrasDeArte { get; set; } = new List<ObraDeArte>();
     }
 }
