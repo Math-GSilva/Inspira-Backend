@@ -35,5 +35,10 @@ namespace inspira_backend.Infra.Repositories
             return await _context.Curtidas
                 .FirstOrDefaultAsync(c => c.UsuarioId == userId && c.ObraDeArteId == obraDeArteId);
         }
+
+        public async Task<int> CountByObraDeArteIdAsync(Guid obraDeArteId)
+        {
+            return await _context.Curtidas.CountAsync(c => c.ObraDeArteId == obraDeArteId);
+        }
     }
 }

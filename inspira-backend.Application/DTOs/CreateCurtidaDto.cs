@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace inspira_backend.Application.DTOs
 {
-    public class CreateComentarioDto
+    public class CreateCurtidaDto
     {
         [Required]
         public Guid ObraDeArteId { get; set; }
-
-        [Required, MaxLength(1000)]
-        public string Conteudo { get; set; }
     }
 }
