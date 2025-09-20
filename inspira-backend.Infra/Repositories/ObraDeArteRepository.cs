@@ -41,7 +41,6 @@ namespace inspira_backend.Infra.Repositories
                     Curtidas = o.Curtidas,
                     UrlMidia = o.UrlMidia,
                     TipoConteudoMidia = o.TipoConteudoMidia
-                    // O campo DadosMidia é intencionalmente omitido
                 });
             }
 
@@ -50,7 +49,6 @@ namespace inspira_backend.Infra.Repositories
 
         public async Task<IEnumerable<ObraDeArte>> GetAllAsync()
         {
-            // OTIMIZAÇÃO: Nunca carregar os bytes da mídia na listagem geral
             return await _context.ObrasDeArte
                 .Include(o => o.Usuario)
                 .Include(o => o.Categoria)

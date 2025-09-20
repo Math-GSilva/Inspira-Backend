@@ -51,7 +51,6 @@ namespace inspira_backend.Application.Services
 
             var categoria = new Categoria
             {
-                // O Guid é gerado automaticamente pelo construtor da entidade
                 Nome = dto.Nome,
                 Descricao = dto.Descricao
             };

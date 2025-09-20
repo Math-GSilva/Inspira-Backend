@@ -16,7 +16,7 @@ namespace inspira_backend.API.Controllers
         private Guid GetCurrentUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         [HttpPost]
-        [Authorize(Roles = "Artista")]
+        [Authorize(Roles = "Artista, Administrador")]
         public async Task<IActionResult> Create([FromForm] CreateObraDeArteDto dto)
         {
             var obraCriada = await _service.CreateAsync(dto, GetCurrentUserId());
@@ -54,7 +54,7 @@ namespace inspira_backend.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Artista")]
+        [Authorize(Roles = "Artista, Administrador")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateObraDeArteDto dto)
         {
             try
@@ -70,7 +70,7 @@ namespace inspira_backend.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Artista")]
+        [Authorize(Roles = "Artista, Administrador")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try

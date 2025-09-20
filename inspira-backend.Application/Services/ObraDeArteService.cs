@@ -14,13 +14,13 @@ namespace inspira_backend.Application.Services
     {
         private readonly IObraDeArteRepository _obraDeArteRepository;
         private readonly IUsuarioRepository _usuarioRepository;
-        //private readonly ICategoriaRepository _categoriaRepository;
+        private readonly ICategoriaRepository _categoriaRepository;
 
-        public ObraDeArteService(IObraDeArteRepository obraDeArteRepository, IUsuarioRepository usuarioRepository/*, ICategoriaRepository categoriaRepository*/)
+        public ObraDeArteService(IObraDeArteRepository obraDeArteRepository, IUsuarioRepository usuarioRepository, ICategoriaRepository categoriaRepository)
         {
             _obraDeArteRepository = obraDeArteRepository;
             _usuarioRepository = usuarioRepository;
-            //_categoriaRepository = categoriaRepository;
+            _categoriaRepository = categoriaRepository;
         }
 
         private ObraDeArteResponseDto MapToDto(ObraDeArte obra)
@@ -40,8 +40,8 @@ namespace inspira_backend.Application.Services
         public async Task<ObraDeArteResponseDto?> CreateAsync(CreateObraDeArteDto dto, Guid userId)
         {
             var autor = await _usuarioRepository.GetByIdAsync(userId);
-            //var categoria = await _categoriaRepository.GetByIdAsync(dto.CategoriaId);
-            if (autor == null /*|| categoria == null*/) return null;
+            var categoria = await _categoriaRepository.GetByIdAsync(dto.CategoriaId);
+            if (autor == null || categoria == null) return null;
 
             byte[] dadosMidia;
             using (var memoryStream = new MemoryStream())
@@ -64,7 +64,7 @@ namespace inspira_backend.Application.Services
 
             await _obraDeArteRepository.AddAsync(obraDeArte);
             obraDeArte.Usuario = autor;
-            //obraDeArte.Categoria = categoria;
+            obraDeArte.Categoria = categoria;
             return MapToDto(obraDeArte);
         }
 

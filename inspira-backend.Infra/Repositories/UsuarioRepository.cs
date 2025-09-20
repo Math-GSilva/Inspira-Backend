@@ -21,7 +21,12 @@ namespace inspira_backend.Infra.Repositories
 
         public async Task<Usuario?> GetByIdAsync(Guid id)
         {
-            return await _context.Usuarios.FindAsync(id);
+            return await _context.Usuarios
+                .Include(u => u.Seguidores)
+                .ThenInclude(s => s.SeguidorUsuario)
+                .Include(u => u.Seguindo)
+                .ThenInclude(s => s.SeguidoUsuario)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<Usuario?> GetByUsernameAsync(string username)

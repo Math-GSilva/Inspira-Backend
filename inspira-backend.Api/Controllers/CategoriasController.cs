@@ -24,7 +24,6 @@ namespace inspira_backend.API.Controllers
             return Ok(categorias);
         }
 
-        // Adicionamos a restrição ":guid" para garantir que o parâmetro da rota seja um Guid válido
         [HttpGet("{id:guid}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetById(Guid id)

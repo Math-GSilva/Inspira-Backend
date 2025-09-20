@@ -15,7 +15,6 @@ namespace inspira_backend.Infra
         {
         }
 
-        // Mapeamento das suas entidades para tabelas do banco de dados
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
         public DbSet<ObraDeArte> ObrasDeArte { get; set; }
@@ -27,33 +26,25 @@ namespace inspira_backend.Infra
         {
             base.OnModelCreating(modelBuilder);
 
-            // ----- Configurações de Chaves e Relacionamentos (Fluent API) -----
 
-            // Configuração da chave primária composta para a tabela Curtidas
             modelBuilder.Entity<Curtida>()
                 .HasKey(c => new { c.UsuarioId, c.ObraDeArteId });
 
-            // Configuração da chave primária composta para a tabela Seguidores
             modelBuilder.Entity<Seguidor>()
                 .HasKey(s => new { s.SeguidorId, s.SeguidoId });
 
-            // Configuração do relacionamento N-para-N de Seguidores
-            // Define o relacionamento: Um Seguidor (usuário) tem muitos "Seguindo"
             modelBuilder.Entity<Seguidor>()
                 .HasOne(s => s.SeguidorUsuario)
                 .WithMany(u => u.Seguindo)
                 .HasForeignKey(s => s.SeguidorId)
-                .OnDelete(DeleteBehavior.Restrict); // Evita exclusão em cascata ciclica
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Define o relacionamento: Um Seguido (usuário) tem muitos "Seguidores"
             modelBuilder.Entity<Seguidor>()
                 .HasOne(s => s.SeguidoUsuario)
                 .WithMany(u => u.Seguidores)
                 .HasForeignKey(s => s.SeguidoId)
-                .OnDelete(DeleteBehavior.Restrict); // Evita exclusão em cascata ciclica
+                .OnDelete(DeleteBehavior.Restrict); 
 
-            // Mapeamento do Enum para o tipo 'user_role' do PostgreSQL
-            // Isso garante que o EF Core crie o tipo ENUM no banco de dados
             modelBuilder.HasPostgresEnum<UserRole>();
         }
     }
