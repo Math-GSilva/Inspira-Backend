@@ -15,12 +15,15 @@ namespace inspira_backend.Application.Services
         private readonly IObraDeArteRepository _obraDeArteRepository;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ICategoriaRepository _categoriaRepository;
+        private readonly IMediaUploadService _mediaUploadService;
 
-        public ObraDeArteService(IObraDeArteRepository obraDeArteRepository, IUsuarioRepository usuarioRepository, ICategoriaRepository categoriaRepository)
+        public ObraDeArteService(IObraDeArteRepository obraDeArteRepository, IUsuarioRepository usuarioRepository,
+            ICategoriaRepository categoriaRepository, IMediaUploadService mediaUploadService)
         {
             _obraDeArteRepository = obraDeArteRepository;
             _usuarioRepository = usuarioRepository;
             _categoriaRepository = categoriaRepository;
+            _mediaUploadService = mediaUploadService;
         }
 
         private ObraDeArteResponseDto MapToDto(ObraDeArte obra)
@@ -33,7 +36,8 @@ namespace inspira_backend.Application.Services
                 DataPublicacao = obra.DataPublicacao,
                 AutorUsername = obra.Usuario?.NomeUsuario ?? "N/A",
                 CategoriaNome = obra.Categoria?.Nome ?? "N/A",
-                TotalCurtidas = obra.Curtidas?.Count ?? 0
+                TotalCurtidas = obra.Curtidas?.Count ?? 0,
+                Url = obra.UrlMidia
             };
         }
 
@@ -41,7 +45,10 @@ namespace inspira_backend.Application.Services
         {
             var autor = await _usuarioRepository.GetByIdAsync(userId);
             var categoria = await _categoriaRepository.GetByIdAsync(dto.CategoriaId);
-            if (autor == null || categoria == null) return null;
+            var mediaUrl = await _mediaUploadService.UploadAsync(dto.Midia);
+            if (autor == null || categoria == null || mediaUrl == null ) return null;
+
+            
 
             byte[] dadosMidia;
             using (var memoryStream = new MemoryStream())
@@ -54,7 +61,7 @@ namespace inspira_backend.Application.Services
             {
                 Titulo = dto.Titulo,
                 Descricao = dto.Descricao,
-                UrlMidia = null, // Inicialmente nulo, pois está na base de dados
+                UrlMidia = mediaUrl,
                 DadosMidia = dadosMidia,
                 TipoConteudoMidia = dto.Midia.ContentType,
                 DataPublicacao = DateTime.UtcNow,
