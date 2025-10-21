@@ -28,7 +28,7 @@
             [AllowAnonymous]
             public async Task<IActionResult> GetAll()
             {
-                var obras = await _service.GetAllAsync();
+                var obras = await _service.GetAllAsync(GetCurrentUserId());
                 return Ok(obras);
             }
 

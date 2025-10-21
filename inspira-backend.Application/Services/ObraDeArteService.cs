@@ -26,7 +26,7 @@ namespace inspira_backend.Application.Services
             _mediaUploadService = mediaUploadService;
         }
 
-        private ObraDeArteResponseDto MapToDto(ObraDeArte obra)
+        private ObraDeArteResponseDto MapToDto(ObraDeArte obra, Guid? userId = null)
         {
             return new ObraDeArteResponseDto
             {
@@ -37,7 +37,8 @@ namespace inspira_backend.Application.Services
                 AutorUsername = obra.Usuario?.NomeUsuario ?? "N/A",
                 CategoriaNome = obra.Categoria?.Nome ?? "N/A",
                 TotalCurtidas = obra.Curtidas?.Count ?? 0,
-                Url = obra.UrlMidia
+                Url = obra.UrlMidia,
+                CurtidaPeloUsuario = userId != null && (obra.Curtidas?.Any(curtida => curtida.UsuarioId == userId) ?? false )
             };
         }
 
@@ -75,10 +76,10 @@ namespace inspira_backend.Application.Services
             return MapToDto(obraDeArte);
         }
 
-        public async Task<IEnumerable<ObraDeArteResponseDto>> GetAllAsync()
+        public async Task<IEnumerable<ObraDeArteResponseDto>> GetAllAsync(Guid userId)
         {
             var obras = await _obraDeArteRepository.GetAllAsync();
-            return obras.Select(MapToDto);
+            return obras.Select(obra => MapToDto(obra, userId));
         }
 
         public async Task<ObraDeArteResponseDto?> GetByIdAsync(Guid id)

@@ -53,9 +53,9 @@ namespace inspira_backend.Application.Services
             return await GetProfileByUsernameAsync(usuario.NomeUsuario);
         }
 
-        public async Task<IEnumerable<UsuarioProfileDto>> SearchUsersAsync(string query)
+        public async Task<IEnumerable<UsuarioProfileDto>> SearchUsersAsync(string query, Guid userId)
         {
-            var usuarios = await _usuarioRepository.SearchByUsernameAsync(query);
+            var usuarios = await _usuarioRepository.SearchByUsernameAsync(query, userId);
             return usuarios.Select(u => new UsuarioProfileDto
             {
                 Id = u.Id,
@@ -63,7 +63,8 @@ namespace inspira_backend.Application.Services
                 NomeCompleto = u.NomeCompleto,
                 UrlFotoPerfil = u.UrlFotoPerfil,
                 ContagemSeguidores = u.Seguidores?.Count ?? 0,
-                ContagemSeguindo = u.Seguindo?.Count ?? 0
+                ContagemSeguindo = u.Seguindo?.Count ?? 0,
+                SeguidoPeloUsuarioAtual = u.Seguidores?.Any(seguidor => seguidor.SeguidorId.Equals(userId)) ?? false
             });
         }
 

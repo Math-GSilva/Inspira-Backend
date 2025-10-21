@@ -16,5 +16,6 @@ namespace inspira_backend.Application.DTOs
         public string? UrlFotoPerfil { get; set; }
         public int ContagemSeguidores { get; set; }
         public int ContagemSeguindo { get; set; }
+        public bool SeguidoPeloUsuarioAtual { get; set; }
     }
 }

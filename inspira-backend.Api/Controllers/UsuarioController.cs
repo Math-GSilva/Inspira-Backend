@@ -21,7 +21,8 @@ namespace inspira_backend.API.Controllers
         [Authorize]
         public async Task<IActionResult> Search([FromQuery] string query)
         {
-            var usuarios = await _usuarioService.SearchUsersAsync(query);
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var usuarios = await _usuarioService.SearchUsersAsync(query, userId);
             return Ok(usuarios);
         }
 

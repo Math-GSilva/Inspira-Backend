@@ -67,7 +67,8 @@ namespace inspira_backend.Application.Services
             DataComentario = c.DataComentario,
             AutorUsername = c.Usuario?.NomeUsuario ?? "N/A",
             AutorId = c.UsuarioId,
-            Respostas = MapComentariosToDto(c.Respostas)
+            Respostas = MapComentariosToDto(c.Respostas),
+            UrlFotoPerfil = c.Usuario?.UrlFotoPerfil ?? ""
         };
 
         private List<ComentarioResponseDto> MapComentariosToDto(IEnumerable<Comentario> comentarios)

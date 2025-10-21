@@ -11,7 +11,7 @@ namespace inspira_backend.Application.Interfaces
     {
         Task<UsuarioProfileDto?> GetProfileByUsernameAsync(string username);
         Task<UsuarioProfileDto?> UpdateProfileAsync(Guid userId, UpdateUsuarioDto dto);
-        Task<IEnumerable<UsuarioProfileDto>> SearchUsersAsync(string query);
+        Task<IEnumerable<UsuarioProfileDto>> SearchUsersAsync(string query, Guid userId);
         Task<bool> FollowUserAsync(Guid seguidorId, Guid seguidoId);
         Task<bool> UnfollowUserAsync(Guid seguidorId, Guid seguidoId);
     }

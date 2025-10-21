@@ -13,6 +13,7 @@ namespace inspira_backend.Application.DTOs
         public DateTime DataComentario { get; set; }
         public string AutorUsername { get; set; }
         public Guid AutorId { get; set; }
+        public string UrlFotoPerfil { get; set; }
         public ICollection<ComentarioResponseDto> Respostas { get; set; } = new List<ComentarioResponseDto>();
     }
 }

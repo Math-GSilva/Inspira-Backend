@@ -42,12 +42,12 @@ namespace inspira_backend.Infra.Repositories
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<IEnumerable<Usuario>> SearchByUsernameAsync(string username)
+        public async Task<IEnumerable<Usuario>> SearchByUsernameAsync(string username, Guid userId)
         {
             return await _context.Usuarios
                 .Include(u => u.Seguidores)
                 .Include(u => u.Seguindo)
-                .Where(u => u.NomeUsuario.Contains(username))
+                .Where(u => u.NomeUsuario.Contains(username) && u.Id != userId)
                 .ToListAsync();
         }
 

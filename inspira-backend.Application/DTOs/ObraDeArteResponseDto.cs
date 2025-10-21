@@ -16,5 +16,6 @@ namespace inspira_backend.Application.DTOs
         public string CategoriaNome { get; set; }
         public string? Url { get; set; }
         public int TotalCurtidas { get; set; }
+        public bool CurtidaPeloUsuario { get;set; }
     }
 }
