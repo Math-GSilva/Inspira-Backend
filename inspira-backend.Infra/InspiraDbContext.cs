@@ -43,7 +43,13 @@ namespace inspira_backend.Infra
                 .HasOne(s => s.SeguidoUsuario)
                 .WithMany(u => u.Seguidores)
                 .HasForeignKey(s => s.SeguidoId)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.CategoriaPrincipal)
+                .WithMany(c => c.UsuariosComEstaCategoriaPrincipal)
+                .HasForeignKey(u => u.CategoriaPrincipalId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.HasPostgresEnum<UserRole>();
         }

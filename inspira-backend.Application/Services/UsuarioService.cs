@@ -2,11 +2,6 @@
 using inspira_backend.Application.Interfaces;
 using inspira_backend.Domain.Entities;
 using inspira_backend.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace inspira_backend.Application.Services
 {
@@ -21,7 +16,7 @@ namespace inspira_backend.Application.Services
             _seguidorRepository = seguidorRepository;
         }
 
-        public async Task<UsuarioProfileDto?> GetProfileByUsernameAsync(string username)
+        public async Task<UsuarioProfileDto?> GetProfileByUsernameAsync(string username, Guid userId)
         {
             var usuario = await _usuarioRepository.GetByUsernameAsync(username);
             if (usuario == null) return null;
@@ -34,7 +29,8 @@ namespace inspira_backend.Application.Services
                 Bio = usuario.Bio,
                 UrlFotoPerfil = usuario.UrlFotoPerfil,
                 ContagemSeguidores = usuario.Seguidores?.Count ?? 0,
-                ContagemSeguindo = usuario.Seguindo?.Count ?? 0
+                ContagemSeguindo = usuario.Seguindo?.Count ?? 0,
+                SeguidoPeloUsuarioAtual = usuario.Seguidores?.Any(seguidor => seguidor.SeguidorId.Equals(userId)) ?? false
             };
         }
 
@@ -50,20 +46,19 @@ namespace inspira_backend.Application.Services
 
             await _usuarioRepository.UpdateAsync(usuario);
 
-            return await GetProfileByUsernameAsync(usuario.NomeUsuario);
+            return await GetProfileByUsernameAsync(usuario.NomeUsuario, userId);
         }
 
-        public async Task<IEnumerable<UsuarioProfileDto>> SearchUsersAsync(string query, Guid userId)
+        public async Task<IEnumerable<UsuarioProfileDto>> SearchUsersAsync(string? query, Guid? categoriaPrincipal, Guid userId)
         {
-            var usuarios = await _usuarioRepository.SearchByUsernameAsync(query, userId);
+            var usuarios = await _usuarioRepository.SearchAsync(query, categoriaPrincipal, userId);
+
             return usuarios.Select(u => new UsuarioProfileDto
             {
                 Id = u.Id,
                 Username = u.NomeUsuario,
                 NomeCompleto = u.NomeCompleto,
                 UrlFotoPerfil = u.UrlFotoPerfil,
-                ContagemSeguidores = u.Seguidores?.Count ?? 0,
-                ContagemSeguindo = u.Seguindo?.Count ?? 0,
                 SeguidoPeloUsuarioAtual = u.Seguidores?.Any(seguidor => seguidor.SeguidorId.Equals(userId)) ?? false
             });
         }
@@ -76,7 +71,7 @@ namespace inspira_backend.Application.Services
             if (userToFollow == null) return false;
 
             var existingFollow = await _seguidorRepository.GetByFollowerAndFollowedAsync(seguidorId, seguidoId);
-            if (existingFollow != null) return true;
+            if (existingFollow != null) return true; // Já segue, operação bem-sucedida
 
             var seguidor = new Seguidor
             {
@@ -91,7 +86,7 @@ namespace inspira_backend.Application.Services
         public async Task<bool> UnfollowUserAsync(Guid seguidorId, Guid seguidoId)
         {
             var existingFollow = await _seguidorRepository.GetByFollowerAndFollowedAsync(seguidorId, seguidoId);
-            if (existingFollow == null) return false;
+            if (existingFollow == null) return false; // Não segue, não pode deixar de seguir
 
             await _seguidorRepository.DeleteAsync(existingFollow);
             return true;
