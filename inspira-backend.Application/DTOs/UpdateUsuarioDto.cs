@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace inspira_backend.Application.DTOs
         [MaxLength(500)]
         public string? Bio { get; set; }
 
-        [Url]
-        public string? UrlFotoPerfil { get; set; }
+        [Required]
+        public IFormFile? FotoPerfil { get; set; }
     }
 }

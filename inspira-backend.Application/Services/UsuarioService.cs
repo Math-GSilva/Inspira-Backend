@@ -9,11 +9,13 @@ namespace inspira_backend.Application.Services
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ISeguidorRepository _seguidorRepository;
+        private readonly IMediaUploadService _mediaUploadService;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, ISeguidorRepository seguidorRepository)
+        public UsuarioService(IUsuarioRepository usuarioRepository, ISeguidorRepository seguidorRepository, IMediaUploadService mediaUploadService)
         {
             _usuarioRepository = usuarioRepository;
             _seguidorRepository = seguidorRepository;
+            _mediaUploadService = mediaUploadService;
         }
 
         public async Task<UsuarioProfileDto?> GetProfileByUsernameAsync(string username, Guid userId)
@@ -39,10 +41,15 @@ namespace inspira_backend.Application.Services
             var usuario = await _usuarioRepository.GetByIdAsync(userId);
             if (usuario == null) return null;
 
+            var urlFotoPerfil = "";
+            if (dto.FotoPerfil.Length > 0)
+                urlFotoPerfil = await _mediaUploadService.UploadAsync(dto.FotoPerfil);
+
             usuario.NomeCompleto = dto.NomeCompleto;
             usuario.Bio = dto.Bio;
-            usuario.UrlFotoPerfil = dto.UrlFotoPerfil;
             usuario.DataAtualizacao = DateTime.UtcNow;
+            if(string.IsNullOrWhiteSpace(urlFotoPerfil))
+                usuario.UrlFotoPerfil = urlFotoPerfil;
 
             await _usuarioRepository.UpdateAsync(usuario);
 

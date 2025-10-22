@@ -35,6 +35,7 @@ namespace inspira_backend.Application.Services
                 Descricao = obra.Descricao,
                 DataPublicacao = obra.DataPublicacao,
                 AutorUsername = obra.Usuario?.NomeUsuario ?? "N/A",
+                UrlFotoPerfilAutor = obra.Usuario?.UrlFotoPerfil ?? "",
                 CategoriaNome = obra.Categoria?.Nome ?? "N/A",
                 TotalCurtidas = obra.Curtidas?.Count ?? 0,
                 Url = obra.UrlMidia,

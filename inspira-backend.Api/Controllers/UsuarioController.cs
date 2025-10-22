@@ -58,7 +58,7 @@ namespace inspira_backend.API.Controllers
 
         [HttpPut("me")]
         [Authorize]
-        public async Task<IActionResult> UpdateMyProfile([FromBody] UpdateUsuarioDto dto)
+        public async Task<IActionResult> UpdateMyProfile([FromForm] UpdateUsuarioDto dto)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
