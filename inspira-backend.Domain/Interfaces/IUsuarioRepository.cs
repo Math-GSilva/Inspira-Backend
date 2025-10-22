@@ -12,7 +12,7 @@ namespace inspira_backend.Domain.Interfaces
         Task<Usuario?> GetByIdAsync(Guid id);
         Task<Usuario?> GetByUsernameAsync(string username);
         Task<Usuario?> GetByEmailAsync(string email);
-        Task<IEnumerable<Usuario>> SearchByUsernameAsync(string username, Guid userId);
+        Task<IEnumerable<Usuario>> SearchAsync(string? query, Guid? categoriaPrincipal, Guid userId);
         Task AddAsync(Usuario usuario);
         Task UpdateAsync(Usuario usuario);
     }

@@ -17,12 +17,29 @@ namespace inspira_backend.API.Controllers
             _usuarioService = usuarioService;
         }
 
+        /// <summary>
+        /// Pesquisa usuários com base em um termo de pesquisa (nome/username) e/ou uma categoria principal.
+        /// </summary>
+        /// <param name="query">Termo para pesquisar no nome de usuário ou nome completo.</param>
+        /// <param name="categoriaPrincipal">Categoria principal para filtrar os usuários.</param>
+        /// <returns>Uma lista de usuários que correspondem aos critérios de pesquisa.</returns>
         [HttpGet("search")]
         [Authorize]
-        public async Task<IActionResult> Search([FromQuery] string query)
+        public async Task<IActionResult> Search([FromQuery] string? query, [FromQuery] string? categoriaPrincipal)
         {
+            // Validação para garantir que pelo menos um critério de pesquisa foi fornecido.
+            if (string.IsNullOrWhiteSpace(query) && string.IsNullOrWhiteSpace(categoriaPrincipal))
+            {
+                return BadRequest(new { message = "É necessário fornecer um termo de pesquisa ou uma categoria." });
+            }
+
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var usuarios = await _usuarioService.SearchUsersAsync(query, userId);
+
+            // A chamada de serviço agora passa ambos os parâmetros.
+            // A lógica de filtragem (LIKE no nome/username E/OU pela categoria) deve ser implementada no IUsuarioService.
+            Guid? idCategoriaPrincipal = string.IsNullOrWhiteSpace(categoriaPrincipal) ? null : Guid.Parse(categoriaPrincipal);
+            var usuarios = await _usuarioService.SearchUsersAsync(query, idCategoriaPrincipal, userId);
+
             return Ok(usuarios);
         }
 
@@ -30,7 +47,8 @@ namespace inspira_backend.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetProfile(string username)
         {
-            var profile = await _usuarioService.GetProfileByUsernameAsync(username);
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var profile = await _usuarioService.GetProfileByUsernameAsync(username, userId);
             if (profile == null)
             {
                 return NotFound(new { message = "Usuário não encontrado." });

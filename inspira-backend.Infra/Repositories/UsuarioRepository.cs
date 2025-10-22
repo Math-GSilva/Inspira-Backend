@@ -1,12 +1,6 @@
-﻿using inspira_backend.Application.Interfaces;
-using inspira_backend.Domain.Entities;
+﻿using inspira_backend.Domain.Entities;
 using inspira_backend.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace inspira_backend.Infra.Repositories
 {
@@ -42,12 +36,24 @@ namespace inspira_backend.Infra.Repositories
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task<IEnumerable<Usuario>> SearchByUsernameAsync(string username, Guid userId)
+        public async Task<IEnumerable<Usuario>> SearchAsync(string? query, Guid? categoriaPrincipal, Guid userId)
         {
-            return await _context.Usuarios
+            var usuariosQuery = _context.Usuarios.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                usuariosQuery = usuariosQuery.Where(u =>
+                    u.NomeUsuario.Contains(query) || u.NomeCompleto.Contains(query));
+            }
+
+            if (categoriaPrincipal.HasValue)
+            {
+                usuariosQuery = usuariosQuery.Where(u => u.CategoriaPrincipalId == categoriaPrincipal);
+            }
+
+            return await usuariosQuery
+                .Where(u => u.Id != userId)
                 .Include(u => u.Seguidores)
-                .Include(u => u.Seguindo)
-                .Where(u => u.NomeUsuario.Contains(username) && u.Id != userId)
                 .ToListAsync();
         }
 

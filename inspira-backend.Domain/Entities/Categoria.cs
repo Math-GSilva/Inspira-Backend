@@ -24,5 +24,6 @@ namespace inspira_backend.Domain.Entities
 
         public string? Descricao { get; set; }
         public virtual ICollection<ObraDeArte> ObrasDeArte { get; set; } = new List<ObraDeArte>();
+        public virtual ICollection<Usuario> UsuariosComEstaCategoriaPrincipal { get; set; }
     }
 }
