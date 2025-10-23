@@ -13,6 +13,7 @@ namespace inspira_backend.Application.DTOs
         public string Descricao { get; set; }
         public DateTime DataPublicacao { get; set; }
         public string AutorUsername { get; set; }
+        public string UrlFotoPerfilAutor { get; set; }
         public string CategoriaNome { get; set; }
         public string? Url { get; set; }
         public int TotalCurtidas { get; set; }
