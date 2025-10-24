@@ -10,7 +10,7 @@ namespace inspira_backend.Domain.Interfaces
     public interface IObraDeArteRepository
     {
         Task<ObraDeArte?> GetByIdAsync(Guid id, bool includeMediaData = false);
-        Task<IEnumerable<ObraDeArte>> GetAllAsync();
+        Task<IEnumerable<ObraDeArte>> GetAllAsync(Guid? categoriaId);
         Task AddAsync(ObraDeArte obraDeArte);
         Task UpdateAsync(ObraDeArte obraDeArte);
         Task DeleteAsync(ObraDeArte obraDeArte);

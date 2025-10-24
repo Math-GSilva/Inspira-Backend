@@ -24,15 +24,22 @@
                 return CreatedAtAction(nameof(GetById), new { id = obraCriada.Id }, obraCriada);
             }
 
-            [HttpGet]
-            [AllowAnonymous]
-            public async Task<IActionResult> GetAll()
-            {
-                var obras = await _service.GetAllAsync(GetCurrentUserId());
-                return Ok(obras);
-            }
+        [HttpGet]
+        [AllowAnonymous]
+        // 1. Adicionamos o [FromQuery] Guid? categoriaId para receber o filtro opcional
+        public async Task<IActionResult> GetAll([FromQuery] Guid? categoriaId)
+        {
+            // 2. Obtemos o ID do utilizador logado (pode ser nulo se não estiver logado)
+            var userId = GetCurrentUserId();
 
-            [HttpGet("{id}")]
+            // 3. Passamos ambos os parâmetros para o serviço.
+            // Agora o seu _service.GetAllAsync precisa de ser capaz de receber estes dois parâmetros.
+            var obras = await _service.GetAllAsync(userId, categoriaId);
+
+            return Ok(obras);
+        }
+
+        [HttpGet("{id}")]
             [AllowAnonymous]
             public async Task<IActionResult> GetById(Guid id)
             {
