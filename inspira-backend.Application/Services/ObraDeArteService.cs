@@ -39,6 +39,7 @@ namespace inspira_backend.Application.Services
                 CategoriaNome = obra.Categoria?.Nome ?? "N/A",
                 TotalCurtidas = obra.Curtidas?.Count ?? 0,
                 Url = obra.UrlMidia,
+                TipoConteudoMidia = obra.TipoConteudoMidia ?? "",
                 CurtidaPeloUsuario = userId != null && (obra.Curtidas?.Any(curtida => curtida.UsuarioId == userId) ?? false )
             };
         }
@@ -47,10 +48,16 @@ namespace inspira_backend.Application.Services
         {
             var autor = await _usuarioRepository.GetByIdAsync(userId);
             var categoria = await _categoriaRepository.GetByIdAsync(dto.CategoriaId);
-            var mediaUrl = await _mediaUploadService.UploadAsync(dto.Midia);
-            if (autor == null || categoria == null || mediaUrl == null ) return null;
 
-            
+            if (autor == null || categoria == null) return null;
+
+            if (dto.Midia == null || dto.Midia.Length == 0 || !IsValidMediaType(dto.Midia.ContentType))
+            {
+                return null;
+            }
+
+            var mediaUrl = await _mediaUploadService.UploadAsync(dto.Midia);
+            if (mediaUrl == null) return null;
 
             byte[] dadosMidia;
             using (var memoryStream = new MemoryStream())
@@ -64,7 +71,6 @@ namespace inspira_backend.Application.Services
                 Titulo = dto.Titulo,
                 Descricao = dto.Descricao,
                 UrlMidia = mediaUrl,
-                DadosMidia = dadosMidia,
                 TipoConteudoMidia = dto.Midia.ContentType,
                 DataPublicacao = DateTime.UtcNow,
                 UsuarioId = userId,
@@ -120,6 +126,14 @@ namespace inspira_backend.Application.Services
 
             await _obraDeArteRepository.DeleteAsync(obra);
             return true;
+        }
+
+        private bool IsValidMediaType(string contentType)
+        {
+            string type = contentType.ToLower();
+            return type.StartsWith("image/") ||
+                   type.StartsWith("video/") ||
+                   type.StartsWith("audio/");
         }
     }
 }

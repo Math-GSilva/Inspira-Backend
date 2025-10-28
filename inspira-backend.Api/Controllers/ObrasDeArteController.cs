@@ -17,7 +17,8 @@
 
             [HttpPost]
             [Authorize(Roles = "Artista, Administrador")]
-            public async Task<IActionResult> Create([FromForm] CreateObraDeArteDto dto)
+        [RequestSizeLimit(104857600)]
+        public async Task<IActionResult> Create([FromForm] CreateObraDeArteDto dto)
             {
                 var obraCriada = await _service.CreateAsync(dto, GetCurrentUserId());
                 if (obraCriada == null) return BadRequest("Dados inválidos para a criação da obra.");
