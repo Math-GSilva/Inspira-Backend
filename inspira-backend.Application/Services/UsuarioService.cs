@@ -32,7 +32,10 @@ namespace inspira_backend.Application.Services
                 UrlFotoPerfil = usuario.UrlFotoPerfil,
                 ContagemSeguidores = usuario.Seguidores?.Count ?? 0,
                 ContagemSeguindo = usuario.Seguindo?.Count ?? 0,
-                SeguidoPeloUsuarioAtual = usuario.Seguidores?.Any(seguidor => seguidor.SeguidorId.Equals(userId)) ?? false
+                SeguidoPeloUsuarioAtual = usuario.Seguidores?.Any(seguidor => seguidor.SeguidorId.Equals(userId)) ?? false,
+                UrlInstagram = usuario.UrlInstagram,
+                UrlLinkedin = usuario.UrlLinkedin,
+                UrlPortifolio = usuario.UrlPortifolio
             };
         }
 
