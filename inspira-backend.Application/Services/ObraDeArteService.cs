@@ -89,6 +89,12 @@ namespace inspira_backend.Application.Services
             return obras.Select(obra => MapToDto(obra, userId));
         }
 
+        public async Task<IEnumerable<ObraDeArteResponseDto>> GetAllByUserAsync(Guid userId)
+        {
+            var obras = await _obraDeArteRepository.GetAllByUserAsync(userId);
+            return obras.Select(obra => MapToDto(obra, userId));
+        }
+
         public async Task<ObraDeArteResponseDto?> GetByIdAsync(Guid id)
         {
             var obra = await _obraDeArteRepository.GetByIdAsync(id);

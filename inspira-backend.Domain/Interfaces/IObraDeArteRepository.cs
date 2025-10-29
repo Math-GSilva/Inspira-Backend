@@ -11,6 +11,7 @@ namespace inspira_backend.Domain.Interfaces
     {
         Task<ObraDeArte?> GetByIdAsync(Guid id, bool includeMediaData = false);
         Task<IEnumerable<ObraDeArte>> GetAllAsync(Guid? categoriaId);
+        Task<IEnumerable<ObraDeArte>> GetAllByUserAsync(Guid usuarioId);
         Task AddAsync(ObraDeArte obraDeArte);
         Task UpdateAsync(ObraDeArte obraDeArte);
         Task DeleteAsync(ObraDeArte obraDeArte);

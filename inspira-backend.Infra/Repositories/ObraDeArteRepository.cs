@@ -47,7 +47,7 @@ namespace inspira_backend.Infra.Repositories
             return await query.FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async Task<IEnumerable<ObraDeArte>> GetAllAsync(Guid? categoriaId = null) // 1. Adiciona o parâmetro opcional
+        public async Task<IEnumerable<ObraDeArte>> GetAllAsync(Guid? categoriaId = null)
         {
             IQueryable<ObraDeArte> query = _context.ObrasDeArte
                 .Include(o => o.Usuario)
@@ -59,6 +59,33 @@ namespace inspira_backend.Infra.Repositories
             {
                 query = query.Where(o => o.CategoriaId == categoriaId.Value);
             }
+
+            return await query
+                .Select(o => new ObraDeArte
+                {
+                    Id = o.Id,
+                    Titulo = o.Titulo,
+                    Descricao = o.Descricao,
+                    DataPublicacao = o.DataPublicacao,
+                    UsuarioId = o.UsuarioId,
+                    Usuario = o.Usuario,
+                    CategoriaId = o.CategoriaId,
+                    Categoria = o.Categoria,
+                    Curtidas = o.Curtidas,
+                    UrlMidia = o.UrlMidia,
+                    TipoConteudoMidia = o.TipoConteudoMidia
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ObraDeArte>> GetAllByUserAsync(Guid usuarioId)
+        {
+            IQueryable<ObraDeArte> query = _context.ObrasDeArte
+                .Include(o => o.Usuario)
+                .Include(o => o.Categoria)
+                .Include(o => o.Curtidas)
+                .Where(o => o.UsuarioId == usuarioId)
+                .OrderByDescending(o => o.DataPublicacao);
 
             return await query
                 .Select(o => new ObraDeArte
