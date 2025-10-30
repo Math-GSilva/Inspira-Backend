@@ -47,18 +47,25 @@ namespace inspira_backend.Infra.Repositories
             return await query.FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async Task<IEnumerable<ObraDeArte>> GetAllAsync(Guid? categoriaId = null)
+        public async Task<List<ObraDeArte>> GetAllAsync(Guid? categoriaId, int pageSize, DateTime? cursor)
         {
             IQueryable<ObraDeArte> query = _context.ObrasDeArte
                 .Include(o => o.Usuario)
                 .Include(o => o.Categoria)
                 .Include(o => o.Curtidas)
-                .OrderByDescending(o => o.DataPublicacao);
+                .OrderByDescending(o => o.DataPublicacao); //
 
             if (categoriaId.HasValue)
             {
-                query = query.Where(o => o.CategoriaId == categoriaId.Value);
+                query = query.Where(o => o.CategoriaId == categoriaId.Value); //
             }
+
+            if (cursor.HasValue)
+            {
+                query = query.Where(o => o.DataPublicacao < cursor.Value);
+            }
+
+            query = query.Take(pageSize + 1);
 
             return await query
                 .Select(o => new ObraDeArte

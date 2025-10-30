@@ -83,10 +83,24 @@ namespace inspira_backend.Application.Services
             return MapToDto(obraDeArte);
         }
 
-        public async Task<IEnumerable<ObraDeArteResponseDto>> GetAllAsync(Guid userId, Guid? categoriaId)
+        public async Task<PaginatedResponseDto<ObraDeArteResponseDto>> GetAllAsync(Guid userId, Guid? categoriaId, int pageSize, DateTime? cursor)
         {
-            var obras = await _obraDeArteRepository.GetAllAsync(categoriaId);
-            return obras.Select(obra => MapToDto(obra, userId));
+            var obras = await _obraDeArteRepository.GetAllAsync(categoriaId, pageSize, cursor);
+
+            bool hasMoreItems = obras.Count > pageSize;
+
+            var itemsToReturn = obras.Take(pageSize).ToList();
+
+            var dtos = itemsToReturn.Select(obra => MapToDto(obra, userId)).ToList();
+
+            string? nextCursor = hasMoreItems ? itemsToReturn.Last().DataPublicacao.ToString("o") : null;
+
+            return new PaginatedResponseDto<ObraDeArteResponseDto>
+            {
+                Items = dtos,
+                HasMoreItems = hasMoreItems,
+                NextCursor = nextCursor
+            };
         }
 
         public async Task<IEnumerable<ObraDeArteResponseDto>> GetAllByUserAsync(Guid userId)
@@ -124,11 +138,10 @@ namespace inspira_backend.Application.Services
             return MapToDto(obra);
         }
 
-        public async Task<bool> DeleteAsync(Guid id, Guid userId)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var obra = await _obraDeArteRepository.GetByIdAsync(id);
             if (obra == null) return false;
-            if (obra.UsuarioId != userId) throw new UnauthorizedAccessException("Apenas o autor pode apagar a obra.");
 
             await _obraDeArteRepository.DeleteAsync(obra);
             return true;

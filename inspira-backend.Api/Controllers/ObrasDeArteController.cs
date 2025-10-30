@@ -27,12 +27,16 @@
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAll([FromQuery] Guid? categoriaId)
+        public async Task<IActionResult> GetAll(
+            [FromQuery] Guid? categoriaId,
+            [FromQuery] DateTime? cursor,
+            [FromQuery] int pageSize = 10)
         {
             var userId = GetCurrentUserId();
-            var obras = await _service.GetAllAsync(userId, categoriaId);
 
-            return Ok(obras);
+            var paginatedObras = await _service.GetAllAsync(userId, categoriaId, pageSize, cursor);
+
+            return Ok(paginatedObras);
         }
 
         [HttpGet("user/{userId:guid}")]
@@ -74,7 +78,7 @@
             {
                 try
                 {
-                    var result = await _service.DeleteAsync(id, GetCurrentUserId());
+                    var result = await _service.DeleteAsync(id);
                     if (!result) return NotFound();
                     return NoContent();
                 }
