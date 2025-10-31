@@ -20,5 +20,7 @@ namespace inspira_backend.Application.DTOs
         public string? UrlPortifolio { get; set; }
         public string? UrlLinkedin { get; set; }
         public string? UrlInstagram { get; set; }
+        public string? CategoriaPrincipalId { get; set; }
+        public string? CategoriaPrincipalNome { get; set; }
     }
 }

@@ -29,7 +29,7 @@
         [AllowAnonymous]
         public async Task<IActionResult> GetAll(
             [FromQuery] Guid? categoriaId,
-            [FromQuery] DateTime? cursor,
+            [FromQuery] string? cursor,
             [FromQuery] int pageSize = 10)
         {
             var userId = GetCurrentUserId();

@@ -4,6 +4,7 @@ using inspira_backend.Domain.Entities;
 using inspira_backend.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,17 +84,51 @@ namespace inspira_backend.Application.Services
             return MapToDto(obraDeArte);
         }
 
-        public async Task<PaginatedResponseDto<ObraDeArteResponseDto>> GetAllAsync(Guid userId, Guid? categoriaId, int pageSize, DateTime? cursor)
+        public async Task<PaginatedResponseDto<ObraDeArteResponseDto>> GetAllAsync(Guid userId, Guid? categoriaId, int pageSize, string? cursor)
         {
-            var obras = await _obraDeArteRepository.GetAllAsync(categoriaId, pageSize, cursor);
+            // --- 1. LÓGICA DE PARSE DO CURSOR (3 PARTES) ---
+            int? lastIsLiked = null;
+            double? lastScore = null;
+            DateTime? lastDate = null;
 
-            bool hasMoreItems = obras.Count > pageSize;
+            if (!string.IsNullOrEmpty(cursor))
+            {
+                var parts = cursor.Split('|');
 
-            var itemsToReturn = obras.Take(pageSize).ToList();
+                // Agora esperamos 3 partes: "isLiked|score|data"
+                if (parts.Length == 3 &&
+                    int.TryParse(parts[0], out int isLiked) &&
+                    double.TryParse(parts[1], CultureInfo.InvariantCulture, out double score) &&
+                    DateTime.TryParse(parts[2], CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTime date))
+                {
+                    lastIsLiked = isLiked;
+                    lastScore = score;
+                    lastDate = date;
+                }
+            }
 
-            var dtos = itemsToReturn.Select(obra => MapToDto(obra, userId)).ToList();
+            // --- 2. CHAMA O REPOSITÓRIO ATUALIZADO ---
+            // O repo agora retorna List<(ObraDeArte Obra, int IsLiked, double Score)>
+            var results = await _obraDeArteRepository.GetAllAsync(userId, categoriaId, pageSize, lastIsLiked, lastScore, lastDate);
 
-            string? nextCursor = hasMoreItems ? itemsToReturn.Last().DataPublicacao.ToString("o") : null;
+            // --- 3. GERA A RESPOSTA PAGINADA ---
+            bool hasMoreItems = results.Count > pageSize;
+            var itemsToReturn = results.Take(pageSize).ToList();
+
+            var dtos = itemsToReturn.Select(r => MapToDto(r.Obra, userId)).ToList();
+
+            // --- 4. GERA O NOVO CURSOR COMPOSTO (3 PARTES) ---
+            string? nextCursor = null;
+            if (hasMoreItems)
+            {
+                var lastResult = itemsToReturn.Last();
+                var isLiked = lastResult.IsLiked;
+                var score = lastResult.Score;
+                var date = lastResult.Obra.DataPublicacao;
+
+                // Formato: "isLiked|score|data_iso" (ex: "0|8.5|2025-10-30T22:15:00Z")
+                nextCursor = $"{isLiked}|{score.ToString(CultureInfo.InvariantCulture)}|{date:o}";
+            }
 
             return new PaginatedResponseDto<ObraDeArteResponseDto>
             {

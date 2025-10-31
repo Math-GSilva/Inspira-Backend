@@ -3,21 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inspira-backend.Api", "inspira-backend.Api\inspira-backend.Api.csproj", "{5D881EAD-FDE4-4FBD-B862-3BC076229AE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inspira-backend.Api", "inspira-backend.Api\inspira-backend.Api.csproj", "{5D881EAD-FDE4-4FBD-B862-3BC076229AE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inspira-backend.Application", "inspira-backend.Application\inspira-backend.Application.csproj", "{B0AF0A99-D92C-4F02-9C6B-84C8BB30E194}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inspira-backend.Application", "inspira-backend.Application\inspira-backend.Application.csproj", "{B0AF0A99-D92C-4F02-9C6B-84C8BB30E194}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inspira-backend.Domain", "inspira-backend.Domain\inspira-backend.Domain.csproj", "{B05130A0-C82E-4333-91B9-32531797CF71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inspira-backend.Domain", "inspira-backend.Domain\inspira-backend.Domain.csproj", "{B05130A0-C82E-4333-91B9-32531797CF71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "inspira-backend.Infra", "inspira-backend.Infra\inspira-backend.Infra.csproj", "{4AC63BD1-DD5F-459B-A912-BF685C45B7EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "inspira-backend.Infra", "inspira-backend.Infra\inspira-backend.Infra.csproj", "{4AC63BD1-DD5F-459B-A912-BF685C45B7EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inspira.Trainer", "Inspira.Trainer\Inspira.Trainer.csproj", "{186554CB-32F4-4369-BCCF-FA79914D8BC8}"
 EndProject
 Global
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {0C4EC2C9-0EDD-4495-8614-26F3E44728FE}
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -75,5 +71,23 @@ Global
 		{4AC63BD1-DD5F-459B-A912-BF685C45B7EA}.Release|x64.Build.0 = Release|Any CPU
 		{4AC63BD1-DD5F-459B-A912-BF685C45B7EA}.Release|x86.ActiveCfg = Release|Any CPU
 		{4AC63BD1-DD5F-459B-A912-BF685C45B7EA}.Release|x86.Build.0 = Release|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Debug|x64.Build.0 = Debug|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Debug|x86.Build.0 = Debug|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Release|x64.ActiveCfg = Release|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Release|x64.Build.0 = Release|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{186554CB-32F4-4369-BCCF-FA79914D8BC8}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0C4EC2C9-0EDD-4495-8614-26F3E44728FE}
 	EndGlobalSection
 EndGlobal

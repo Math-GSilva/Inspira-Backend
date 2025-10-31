@@ -35,7 +35,9 @@ namespace inspira_backend.Application.Services
                 SeguidoPeloUsuarioAtual = usuario.Seguidores?.Any(seguidor => seguidor.SeguidorId.Equals(userId)) ?? false,
                 UrlInstagram = usuario.UrlInstagram,
                 UrlLinkedin = usuario.UrlLinkedin,
-                UrlPortifolio = usuario.UrlPortifolio
+                UrlPortifolio = usuario.UrlPortifolio,
+                CategoriaPrincipalId = usuario.CategoriaPrincipal?.Id.ToString() ?? "",
+                CategoriaPrincipalNome = usuario.CategoriaPrincipal?.Nome ?? ""
             };
         }
 
@@ -44,15 +46,23 @@ namespace inspira_backend.Application.Services
             var usuario = await _usuarioRepository.GetByIdAsync(userId);
             if (usuario == null) return null;
 
-            var urlFotoPerfil = "";
-            if (dto.FotoPerfil.Length > 0)
-                urlFotoPerfil = await _mediaUploadService.UploadAsync(dto.FotoPerfil);
+            if (dto.FotoPerfil != null && dto.FotoPerfil.Length > 0)
+            {
+                var urlFotoPerfil = await _mediaUploadService.UploadAsync(dto.FotoPerfil);
 
-            usuario.NomeCompleto = dto.NomeCompleto;
+                if (!string.IsNullOrWhiteSpace(urlFotoPerfil))
+                {
+                    usuario.UrlFotoPerfil = urlFotoPerfil;
+                }
+            }
+
             usuario.Bio = dto.Bio;
             usuario.DataAtualizacao = DateTime.UtcNow;
-            if(string.IsNullOrWhiteSpace(urlFotoPerfil))
-                usuario.UrlFotoPerfil = urlFotoPerfil;
+
+            usuario.UrlPortifolio = dto.UrlPortifolio;
+            usuario.UrlLinkedin = dto.UrlLinkedin;
+            usuario.UrlInstagram = dto.UrlInstagram;
+            usuario.CategoriaPrincipalId = dto.CategoriaPrincipalId;
 
             await _usuarioRepository.UpdateAsync(usuario);
 

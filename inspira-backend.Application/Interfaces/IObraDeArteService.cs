@@ -10,7 +10,7 @@ namespace inspira_backend.Application.Interfaces
     public interface IObraDeArteService
     {
         Task<ObraDeArteResponseDto?> CreateAsync(CreateObraDeArteDto dto, Guid userId);
-        Task<PaginatedResponseDto<ObraDeArteResponseDto>> GetAllAsync(Guid userId, Guid? categoriaId, int pageSize, DateTime? cursor);
+        Task<PaginatedResponseDto<ObraDeArteResponseDto>> GetAllAsync(Guid userId, Guid? categoriaId, int pageSize, string? cursor);
         Task<ObraDeArteResponseDto?> GetByIdAsync(Guid id);
         Task<ObraDeArteResponseDto?> UpdateAsync(Guid id, UpdateObraDeArteDto dto, Guid userId);
         Task<IEnumerable<ObraDeArteResponseDto>> GetAllByUserAsync(Guid userId);
