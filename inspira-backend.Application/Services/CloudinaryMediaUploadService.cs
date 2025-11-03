@@ -10,14 +10,9 @@ namespace inspira_backend.Application.Services
     {
         private readonly Cloudinary _cloudinary;
 
-        public CloudinaryMediaUploadService(IConfiguration configuration)
+        public CloudinaryMediaUploadService(Cloudinary cloudinary)
         {
-            Account account = new Account(
-                configuration["CloudinarySettings:CloudName"],
-                configuration["CloudinarySettings:ApiKey"],
-                configuration["CloudinarySettings:ApiSecret"]);
-
-            _cloudinary = new Cloudinary(account);
+            _cloudinary = cloudinary;
         }
 
         public async Task<string> UploadAsync(IFormFile file)
