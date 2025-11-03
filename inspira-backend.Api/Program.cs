@@ -1,3 +1,4 @@
+using CloudinaryDotNet;
 using inspira_backend.Application.Interfaces;
 using inspira_backend.Application.Services;
 using inspira_backend.Domain.Interfaces;
@@ -46,6 +47,16 @@ builder.Services.AddScoped<ISeguidorService, SeguidorService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<ICurtidaService, CurtidaService>();
 builder.Services.AddScoped<IComentarioService, ComentarioService>();
+builder.Services.AddSingleton(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    Account account = new Account(
+        configuration["CloudinarySettings:CloudName"],
+        configuration["CloudinarySettings:ApiKey"],
+        configuration["CloudinarySettings:ApiSecret"]);
+
+    return new Cloudinary(account);
+});
 builder.Services.AddScoped<IMediaUploadService, CloudinaryMediaUploadService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

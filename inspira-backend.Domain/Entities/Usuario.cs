@@ -36,6 +36,9 @@ namespace inspira_backend.Domain.Entities
         public string? Bio { get; set; }
 
         public string? UrlFotoPerfil { get; set; }
+        public string? UrlPortifolio { get; set; }
+        public string? UrlLinkedin { get; set; }
+        public string? UrlInstagram { get; set; }
 
         [Required]
         public UserRole TipoUsuario { get; set; } = UserRole.Comum;

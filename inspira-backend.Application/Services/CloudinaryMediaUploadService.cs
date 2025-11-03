@@ -3,12 +3,6 @@ using CloudinaryDotNet.Actions;
 using inspira_backend.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace inspira_backend.Application.Services
 {
@@ -16,34 +10,69 @@ namespace inspira_backend.Application.Services
     {
         private readonly Cloudinary _cloudinary;
 
-        public CloudinaryMediaUploadService(IConfiguration config)
+        public CloudinaryMediaUploadService(Cloudinary cloudinary)
         {
-            var account = new Account(
-                config["CloudinarySettings:CloudName"],
-                config["CloudinarySettings:ApiKey"],
-                config["CloudinarySettings:ApiSecret"]
-            );
-            _cloudinary = new Cloudinary(account);
+            _cloudinary = cloudinary;
         }
 
-        public async Task<string?> UploadAsync(IFormFile file)
+        public async Task<string> UploadAsync(IFormFile file)
         {
-            if (file.Length == 0) return null;
+            if (file == null || file.Length == 0)
+            {
+                return null;
+            }
+
+            var resourceType = GetResourceType(file.ContentType);
 
             await using var stream = file.OpenReadStream();
-            var uploadParams = new ImageUploadParams()
-            {
-                File = new FileDescription(file.FileName, stream),
-            };
 
-            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            UploadResult uploadResult;
+
+            switch (resourceType)
+            {
+                case ResourceType.Image:
+                    var imageParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, stream),
+                    };
+                    uploadResult = await _cloudinary.UploadAsync(imageParams);
+                    break;
+
+                case ResourceType.Video:
+                    var videoParams = new VideoUploadParams()
+                    {
+                        File = new FileDescription(file.FileName, stream),
+                    };
+                    uploadResult = await _cloudinary.UploadAsync(videoParams);
+                    break;
+
+                default:
+                    throw new InvalidOperationException("Tipo de recurso não suportado para upload.");
+            }
 
             if (uploadResult.Error != null)
             {
-                throw new Exception(uploadResult.Error.Message);
+                return null;
             }
 
-            return uploadResult.SecureUrl.AbsoluteUri;
+            return uploadResult.SecureUrl.ToString();
+        }
+
+        private ResourceType GetResourceType(string contentType)
+        {
+            string type = contentType.ToLower();
+
+            if (type.StartsWith("image/"))
+            {
+                return ResourceType.Image;
+            }
+
+            if (type.StartsWith("video/") || type.StartsWith("audio/"))
+            {
+                return ResourceType.Video;
+            }
+
+            throw new ArgumentException("Tipo de conteúdo não mapeado para ResourceType do Cloudinary.");
         }
     }
 }

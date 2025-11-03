@@ -21,6 +21,7 @@ namespace inspira_backend.Infra
         public DbSet<Curtida> Curtidas { get; set; }
         public DbSet<Comentario> Comentarios { get; set; }
         public DbSet<Seguidor> Seguidores { get; set; }
+        public DbSet<UsuarioPreferenciaCategoria> UsuarioPreferenciaCategorias { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -50,6 +51,9 @@ namespace inspira_backend.Infra
                 .WithMany(c => c.UsuariosComEstaCategoriaPrincipal)
                 .HasForeignKey(u => u.CategoriaPrincipalId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<UsuarioPreferenciaCategoria>()
+                .HasKey(p => new { p.UsuarioId, p.CategoriaId });
 
             modelBuilder.HasPostgresEnum<UserRole>();
         }

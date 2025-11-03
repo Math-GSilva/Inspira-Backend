@@ -30,7 +30,7 @@ namespace inspira_backend.Application.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
-                new Claim(JwtRegisteredClaimNames.NameId, usuario.NomeUsuario),
+                new Claim(JwtRegisteredClaimNames.Name, usuario.NomeUsuario),
                 new Claim(ClaimTypes.Role, usuario.TipoUsuario.ToString()),
                 new Claim("urlPerfil", usuario.UrlFotoPerfil ?? "")
             };

@@ -15,42 +15,45 @@
 
             private Guid GetCurrentUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            [HttpPost]
-            [Authorize(Roles = "Artista, Administrador")]
-            public async Task<IActionResult> Create([FromForm] CreateObraDeArteDto dto)
-            {
-                var obraCriada = await _service.CreateAsync(dto, GetCurrentUserId());
-                if (obraCriada == null) return BadRequest("Dados inválidos para a criação da obra.");
-                return CreatedAtAction(nameof(GetById), new { id = obraCriada.Id }, obraCriada);
-            }
+        [HttpPost]
+        [Authorize(Roles = "Artista, Administrador")]
+        [RequestSizeLimit(104857600)]
+        public async Task<IActionResult> Create([FromForm] CreateObraDeArteDto dto)
+        {
+            var obraCriada = await _service.CreateAsync(dto, GetCurrentUserId());
+            if (obraCriada == null) return BadRequest("Dados inválidos para a criação da obra.");
+            return CreatedAtAction(nameof(GetById), new { id = obraCriada.Id }, obraCriada);
+        }
 
-            [HttpGet]
-            [AllowAnonymous]
-            public async Task<IActionResult> GetAll()
-            {
-                var obras = await _service.GetAllAsync(GetCurrentUserId());
-                return Ok(obras);
-            }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] Guid? categoriaId,
+            [FromQuery] string? cursor,
+            [FromQuery] int pageSize = 10)
+        {
+            var userId = GetCurrentUserId();
 
-            [HttpGet("{id}")]
+            var paginatedObras = await _service.GetAllAsync(userId, categoriaId, pageSize, cursor);
+
+            return Ok(paginatedObras);
+        }
+
+        [HttpGet("user/{userId:guid}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetArtworksByUserId(Guid userId)
+        {
+            var obras = await _service.GetAllByUserAsync(userId);
+            return Ok(obras);
+        }
+
+        [HttpGet("{id}")]
             [AllowAnonymous]
             public async Task<IActionResult> GetById(Guid id)
             {
                 var obra = await _service.GetByIdAsync(id);
                 if (obra == null) return NotFound();
                 return Ok(obra);
-            }
-
-            [HttpGet("{id}/midia")]
-            [AllowAnonymous]
-            public async Task<IActionResult> GetMidia(Guid id)
-            {
-                var (data, contentType) = await _service.GetMidiaByIdAsync(id);
-                if (data == null || contentType == null)
-                {
-                    return NotFound();
-                }
-                return File(data, contentType);
             }
 
             [HttpPut("{id}")]
@@ -75,7 +78,7 @@
             {
                 try
                 {
-                    var result = await _service.DeleteAsync(id, GetCurrentUserId());
+                    var result = await _service.DeleteAsync(id);
                     if (!result) return NotFound();
                     return NoContent();
                 }

@@ -28,6 +28,7 @@ namespace inspira_backend.Infra.Repositories
             return await _context.Usuarios
                 .Include(u => u.Seguidores)
                 .Include(u => u.Seguindo)
+                .Include(u => u.CategoriaPrincipal)
                 .FirstOrDefaultAsync(u => u.NomeUsuario == username);
         }
 

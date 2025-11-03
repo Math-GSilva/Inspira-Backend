@@ -4,6 +4,7 @@ using inspira_backend.Domain.Entities;
 using inspira_backend.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace inspira_backend.Application.Services
                 CategoriaNome = obra.Categoria?.Nome ?? "N/A",
                 TotalCurtidas = obra.Curtidas?.Count ?? 0,
                 Url = obra.UrlMidia,
+                TipoConteudoMidia = obra.TipoConteudoMidia ?? "",
                 CurtidaPeloUsuario = userId != null && (obra.Curtidas?.Any(curtida => curtida.UsuarioId == userId) ?? false )
             };
         }
@@ -47,10 +49,16 @@ namespace inspira_backend.Application.Services
         {
             var autor = await _usuarioRepository.GetByIdAsync(userId);
             var categoria = await _categoriaRepository.GetByIdAsync(dto.CategoriaId);
-            var mediaUrl = await _mediaUploadService.UploadAsync(dto.Midia);
-            if (autor == null || categoria == null || mediaUrl == null ) return null;
 
-            
+            if (autor == null || categoria == null) return null;
+
+            if (dto.Midia == null || dto.Midia.Length == 0 || !IsValidMediaType(dto.Midia.ContentType))
+            {
+                return null;
+            }
+
+            var mediaUrl = await _mediaUploadService.UploadAsync(dto.Midia);
+            if (mediaUrl == null) return null;
 
             byte[] dadosMidia;
             using (var memoryStream = new MemoryStream())
@@ -64,7 +72,6 @@ namespace inspira_backend.Application.Services
                 Titulo = dto.Titulo,
                 Descricao = dto.Descricao,
                 UrlMidia = mediaUrl,
-                DadosMidia = dadosMidia,
                 TipoConteudoMidia = dto.Midia.ContentType,
                 DataPublicacao = DateTime.UtcNow,
                 UsuarioId = userId,
@@ -77,9 +84,63 @@ namespace inspira_backend.Application.Services
             return MapToDto(obraDeArte);
         }
 
-        public async Task<IEnumerable<ObraDeArteResponseDto>> GetAllAsync(Guid userId)
+        public async Task<PaginatedResponseDto<ObraDeArteResponseDto>> GetAllAsync(Guid userId, Guid? categoriaId, int pageSize, string? cursor)
         {
-            var obras = await _obraDeArteRepository.GetAllAsync();
+            // --- 1. LÓGICA DE PARSE DO CURSOR (3 PARTES) ---
+            int? lastIsLiked = null;
+            double? lastScore = null;
+            DateTime? lastDate = null;
+
+            if (!string.IsNullOrEmpty(cursor))
+            {
+                var parts = cursor.Split('|');
+
+                // Agora esperamos 3 partes: "isLiked|score|data"
+                if (parts.Length == 3 &&
+                    int.TryParse(parts[0], out int isLiked) &&
+                    double.TryParse(parts[1], CultureInfo.InvariantCulture, out double score) &&
+                    DateTime.TryParse(parts[2], CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTime date))
+                {
+                    lastIsLiked = isLiked;
+                    lastScore = score;
+                    lastDate = date;
+                }
+            }
+
+            // --- 2. CHAMA O REPOSITÓRIO ATUALIZADO ---
+            // O repo agora retorna List<(ObraDeArte Obra, int IsLiked, double Score)>
+            var results = await _obraDeArteRepository.GetAllAsync(userId, categoriaId, pageSize, lastIsLiked, lastScore, lastDate);
+
+            // --- 3. GERA A RESPOSTA PAGINADA ---
+            bool hasMoreItems = results.Count > pageSize;
+            var itemsToReturn = results.Take(pageSize).ToList();
+
+            var dtos = itemsToReturn.Select(r => MapToDto(r.Obra, userId)).ToList();
+
+            // --- 4. GERA O NOVO CURSOR COMPOSTO (3 PARTES) ---
+            string? nextCursor = null;
+            if (hasMoreItems)
+            {
+                var lastResult = itemsToReturn.Last();
+                var isLiked = lastResult.IsLiked;
+                var score = lastResult.Score;
+                var date = lastResult.Obra.DataPublicacao;
+
+                // Formato: "isLiked|score|data_iso" (ex: "0|8.5|2025-10-30T22:15:00Z")
+                nextCursor = $"{isLiked}|{score.ToString(CultureInfo.InvariantCulture)}|{date:o}";
+            }
+
+            return new PaginatedResponseDto<ObraDeArteResponseDto>
+            {
+                Items = dtos,
+                HasMoreItems = hasMoreItems,
+                NextCursor = nextCursor
+            };
+        }
+
+        public async Task<IEnumerable<ObraDeArteResponseDto>> GetAllByUserAsync(Guid userId)
+        {
+            var obras = await _obraDeArteRepository.GetAllByUserAsync(userId);
             return obras.Select(obra => MapToDto(obra, userId));
         }
 
@@ -112,14 +173,21 @@ namespace inspira_backend.Application.Services
             return MapToDto(obra);
         }
 
-        public async Task<bool> DeleteAsync(Guid id, Guid userId)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var obra = await _obraDeArteRepository.GetByIdAsync(id);
             if (obra == null) return false;
-            if (obra.UsuarioId != userId) throw new UnauthorizedAccessException("Apenas o autor pode apagar a obra.");
 
             await _obraDeArteRepository.DeleteAsync(obra);
             return true;
+        }
+
+        private bool IsValidMediaType(string contentType)
+        {
+            string type = contentType.ToLower();
+            return type.StartsWith("image/") ||
+                   type.StartsWith("video/") ||
+                   type.StartsWith("audio/");
         }
     }
 }
