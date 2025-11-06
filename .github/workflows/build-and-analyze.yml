@@ -1,6 +1,5 @@
 name: Build, Test and Analyze .NET API
 
-# Gatilhos: roda em pushes e pull requests para a sua branch principal
 on:
   push:
     branches: [ "master" ]
@@ -21,7 +20,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
-      
+          
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -37,13 +36,41 @@ jobs:
             /k:"Math-GSilva_Inspira-Backend" \
             /o:"math-gsilva" \
             /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
-            /d:sonar.host.url="https://sonarcloud.io"
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.verbose=true \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+
+      - name: Show current directory
+        run: |
+          echo "📂 Diretório atual:"
+          pwd
+          ls -la
+
+      - name: List solution files
+        run: |
+          echo "🔍 Listando arquivos .sln encontrados:"
+          find . -name "*.sln"
 
       - name: Restore dependencies
         run: dotnet restore inspira-backend.sln
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
-      
+        
+      - name: Run Unit Tests and Generate Coverage
+        run: |
+          dotnet test inspira-backend.sln \
+            --configuration Release \
+            /p:CollectCoverage=true \
+            /p:CoverletOutputFormat=opencover \
+            /p:CoverletOutput=./TestResults/coverage.opencover.xml \
+            /p:Include="[Inspira.API]*"
+
+      - name: Upload coverage result as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./TestResults/coverage.opencover.xml
+
       - name: End SonarCloud Analysis
         run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
