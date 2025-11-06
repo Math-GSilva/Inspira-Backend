@@ -38,7 +38,7 @@ jobs:
             /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.verbose=true \
-            /d:sonar.cs.opencover.reportsPaths="Inspira.Test/TestResults/coverage.opencover.xml"
+            /d:sonar.cs.opencover.reportsPaths="Inspira.Test/Inspira.Test/TestResults/coverage.opencover.xml"
 
       - name: Show project structure
         run: |
@@ -59,15 +59,13 @@ jobs:
             --configuration Release \
             /p:CollectCoverage=true \
             /p:CoverletOutputFormat=opencover \
-            /p:CoverletOutput=Inspira.Test/TestResults/coverage.opencover.xml \
+            /p:CoverletOutput=Inspira.Test/Inspira.Test/TestResults/coverage.opencover.xml \
             /p:Include="[*]*"
 
-      - name: Check coverage file
+      - name: Verify coverage file path
         run: |
-          echo "🔎 Verificando se o arquivo de cobertura foi criado:"
-          ls -R Inspira.Test/TestResults || true
-          echo "Conteúdo do coverage.opencover.xml (primeiras linhas):"
-          head -n 20 Inspira.Test/TestResults/coverage.opencover.xml || true
+          echo "🧾 Procurando arquivo de cobertura..."
+          find . -type f -name "coverage.opencover.xml"
 
       - name: Upload coverage result as artifact
         uses: actions/upload-artifact@v4
