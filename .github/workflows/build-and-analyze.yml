@@ -38,18 +38,14 @@ jobs:
             /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.verbose=true \
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+            /d:sonar.cs.opencover.reportsPaths="Inspira.Test/TestResults/coverage.opencover.xml"
 
-      - name: Show current directory
+      - name: Show project structure
         run: |
           echo "📂 Diretório atual:"
           pwd
-          ls -la
-
-      - name: List solution files
-        run: |
-          echo "🔍 Listando arquivos .sln encontrados:"
-          find . -name "*.sln"
+          echo "📄 Estrutura de pastas:"
+          ls -R | head -n 100
 
       - name: Restore dependencies
         run: dotnet restore inspira-backend.sln
@@ -63,14 +59,21 @@ jobs:
             --configuration Release \
             /p:CollectCoverage=true \
             /p:CoverletOutputFormat=opencover \
-            /p:CoverletOutput=./TestResults/coverage.opencover.xml \
-            /p:Include="[Inspira.API]*"
+            /p:CoverletOutput=Inspira.Test/TestResults/coverage.opencover.xml \
+            /p:Include="[*]*"
+
+      - name: Check coverage file
+        run: |
+          echo "🔎 Verificando se o arquivo de cobertura foi criado:"
+          ls -R Inspira.Test/TestResults || true
+          echo "Conteúdo do coverage.opencover.xml (primeiras linhas):"
+          head -n 20 Inspira.Test/TestResults/coverage.opencover.xml || true
 
       - name: Upload coverage result as artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: ./TestResults/coverage.opencover.xml
+          path: Inspira.Test/TestResults/coverage.opencover.xml
 
       - name: End SonarCloud Analysis
         run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
