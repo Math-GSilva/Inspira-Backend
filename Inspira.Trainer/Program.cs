@@ -18,12 +18,8 @@ public class Program
 
                 services.AddDbContext<TrainingDbContext>(options =>
                     options.UseNpgsql(connectionString));
-
-                // --- ADICIONADO ---
-                // Registra o repositório para salvar os scores
                 services.AddScoped<IUsuarioPreferenciaRepository, UsuarioPreferenciaRepository>();
 
-                // Registra o serviço principal
                 services.AddHostedService<TrainingService>();
             })
             .UseSerilog((context, loggerConfig) =>
