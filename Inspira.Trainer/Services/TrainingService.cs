@@ -35,7 +35,6 @@ namespace Inspira.Trainer.Services
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            // ... (Nenhuma mudança no StartAsync) ...
             _logger.LogInformation("Serviço de Treinamento e População de IA iniciado.");
 
             try
@@ -79,7 +78,6 @@ namespace Inspira.Trainer.Services
 
         private async Task<List<RecommendationInput>> LoadDataAsync()
         {
-            // ... (Nenhuma mudança no LoadDataAsync) ...
             var curtidas = await _context.Curtidas
                 .AsNoTracking()
                 .Include(c => c.ObraDeArte)
@@ -116,11 +114,7 @@ namespace Inspira.Trainer.Services
             var trainer = _mlContext.Recommendation().Trainers.MatrixFactorization(
                 new MatrixFactorizationTrainer.Options
                 {
-                    // --- =================================== ---
-                    // --- ===         A CORREÇÃO          === ---
-                    // --- =================================== ---
-                    LabelColumnName = "Label", // <-- MUDADO DE VOLTA PARA "Label"
-                    // --- =================================== ---
+                    LabelColumnName = "Label",
                     MatrixColumnIndexColumnName = "UserIdEncoded",
                     MatrixRowIndexColumnName = "ItemIdEncoded",
                     NumberOfIterations = 20,
