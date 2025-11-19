@@ -1,7 +1,6 @@
 ﻿using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Inspira.Trainer.Services;
-using Microsoft.Azure.WebJobs;
 
 namespace Inspira.Trainer
 {
