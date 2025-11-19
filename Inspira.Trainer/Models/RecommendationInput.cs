@@ -9,12 +9,12 @@ namespace Inspira.Trainer.Models
     /// </summary>
     public class RecommendationInput
     {
-        [ColumnName("Label")] // O "Label" é a nota (o que queremos prever/aprender)
+        [ColumnName("Label")]
         public float Rating { get; set; }
 
-        public string UsuarioId { get; set; } = null!; // Mudamos de uint para string
+        public string UsuarioId { get; set; } = null!;
 
-        public string CategoriaId { get; set; } = null!; // Mudamos de uint para string
+        public string CategoriaId { get; set; } = null!;
     }
 
     /// <summary>
@@ -22,7 +22,6 @@ namespace Inspira.Trainer.Models
     /// </summary>
     public class RecommendationOutput
     {
-        // O ML.NET coloca a previsão de nota/score aqui
         public float Score { get; set; }
     }
 }
