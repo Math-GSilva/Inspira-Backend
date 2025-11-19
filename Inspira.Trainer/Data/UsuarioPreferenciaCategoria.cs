@@ -13,6 +13,6 @@ namespace Inspira.Trainer.Data
         public Guid UsuarioId { get; set; }
         public Guid CategoriaId { get; set; }
         public double Score { get; set; }
-        public DateTime DataCalculo { get; set; } = DateTime.UtcNow; // O C# vai definir o default
+        public DateTime DataCalculo { get; set; } = DateTime.UtcNow;
     }
 }

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Inspira.Trainer.Services
 {
-    public class TrainingService : IHostedService
+    public class TrainingService
     {
         private readonly ILogger<TrainingService> _logger;
         private readonly TrainingDbContext _context;
@@ -33,53 +33,40 @@ namespace Inspira.Trainer.Services
             _mlContext = new MLContext();
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public async Task RunOnceAsync()
         {
-            // ... (Nenhuma mudança no StartAsync) ...
-            _logger.LogInformation("Serviço de Treinamento e População de IA iniciado.");
+            _logger.LogInformation("Job iniciado.");
 
             try
             {
-                _logger.LogInformation("Carregando dados de curtidas do PostgreSQL...");
                 var trainingData = await LoadDataAsync();
 
-                if (trainingData.Count == 0)
+                if (!trainingData.Any())
                 {
-                    _logger.LogWarning("Nenhum dado de curtida encontrado. Abortando job.");
+                    _logger.LogWarning("Nenhum dado encontrado. Encerrando.");
                     return;
                 }
-                _logger.LogInformation($"Carregados {trainingData.Count} registros de curtidas agregadas.");
 
-                _logger.LogInformation("Configurando pipeline de treinamento...");
                 var pipeline = BuildTrainingPipeline();
-
-                _logger.LogInformation("Iniciando treinamento do modelo (em memória)...");
                 var dataView = _mlContext.Data.LoadFromEnumerable(trainingData);
                 var model = pipeline.Fit(dataView);
-                _logger.LogInformation("Treinamento concluído.");
 
-                string modelPath = "model.zip";
-                _logger.LogInformation($"Salvando backup do modelo em: {Path.GetFullPath(modelPath)}");
-                _mlContext.Model.Save(model, dataView.Schema, modelPath);
+                _mlContext.Model.Save(model, dataView.Schema, "model.zip");
 
-                _logger.LogInformation("Iniciando job de cálculo e salvamento de scores...");
-                await UpdateAllUserPreferencesAsync(model, cancellationToken);
+                await UpdateAllUserPreferencesAsync(model, CancellationToken.None);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ocorreu um erro crítico durante o job de IA.");
+                _logger.LogError(ex, "Erro crítico durante a execução.");
             }
             finally
             {
-                _logger.LogInformation("Job de IA concluído.");
+                _logger.LogInformation("Job concluído.");
             }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
         private async Task<List<RecommendationInput>> LoadDataAsync()
         {
-            // ... (Nenhuma mudança no LoadDataAsync) ...
             var curtidas = await _context.Curtidas
                 .AsNoTracking()
                 .Include(c => c.ObraDeArte)
@@ -97,7 +84,7 @@ namespace Inspira.Trainer.Services
                 {
                     UsuarioId = g.Key.UsuarioId,
                     CategoriaId = g.Key.CategoriaId,
-                    Rating = g.Count() // Propriedade C# "Rating"
+                    Rating = g.Count()
                 })
                 .ToList();
 
@@ -116,11 +103,7 @@ namespace Inspira.Trainer.Services
             var trainer = _mlContext.Recommendation().Trainers.MatrixFactorization(
                 new MatrixFactorizationTrainer.Options
                 {
-                    // --- =================================== ---
-                    // --- ===         A CORREÇÃO          === ---
-                    // --- =================================== ---
-                    LabelColumnName = "Label", // <-- MUDADO DE VOLTA PARA "Label"
-                    // --- =================================== ---
+                    LabelColumnName = "Label",
                     MatrixColumnIndexColumnName = "UserIdEncoded",
                     MatrixRowIndexColumnName = "ItemIdEncoded",
                     NumberOfIterations = 20,
@@ -133,7 +116,6 @@ namespace Inspira.Trainer.Services
 
         private async Task UpdateAllUserPreferencesAsync(ITransformer model, CancellationToken token)
         {
-            // ... (Nenhuma mudança no UpdateAllUserPreferencesAsync) ...
             var predictionEngine = _mlContext.Model.CreatePredictionEngine<RecommendationInput, RecommendationOutput>(model);
 
             var allUsers = await _context.Usuarios.AsNoTracking()

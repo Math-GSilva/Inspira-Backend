@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Inspira.Trainer": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
