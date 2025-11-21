@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
   build-test-analyze:
@@ -39,13 +40,7 @@ jobs:
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.verbose=true \
             /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
-
-      - name: Show project structure
-        run: |
-          echo "📂 Diretório atual:"
-          pwd
-          echo "📄 Estrutura de pastas:"
-          ls -R | head -n 100
+            /d:sonar.coverage.exclusions="**/DTOs/**,**/Entities/**,**/Migrations/**,**/Program.cs,**/Infra/Repositories/**,**/InspiraDbContext.cs,**/Inspira.Trainer/**"
 
       - name: Restore dependencies
         run: dotnet restore inspira-backend.sln
