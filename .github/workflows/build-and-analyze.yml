@@ -39,9 +39,9 @@ jobs:
             /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.verbose=true \
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
             /d:sonar.coverage.exclusions="**/DTOs/**,**/Entities/**,**/Migrations/**,**/Program.cs,**/Infra/Repositories/**,**/InspiraDbContext.cs,**/Inspira.Trainer/**"
-
+      
       - name: Restore dependencies
         run: dotnet restore inspira-backend.sln
 
