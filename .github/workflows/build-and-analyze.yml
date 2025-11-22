@@ -39,7 +39,7 @@ jobs:
             /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.verbose=true \
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.cobertura.xml" \
             /d:sonar.coverage.exclusions="**/DTOs/**,**/Entities/**,**/Migrations/**,**/Program.cs,**/InspiraDbContext.cs,**/Inspira.Trainer/**,**/CloudinaryWrapper.cs"
       
       - name: Restore dependencies
@@ -54,20 +54,19 @@ jobs:
             --configuration Release \
             --no-build \
             --verbosity normal \
-            /p:CollectCoverage=true \
-            /p:CoverletOutputFormat=opencover \
-            /p:Include="[*]*"
+            --collect:"XPlat Code Coverage" \
+            --results-directory ./TestResults
 
       - name: Verify coverage file path
         run: |
-          echo "🧾 Procurando arquivo de cobertura..."
-          find . -type f -name "coverage.opencover.xml"
+          echo "🧾 Procurando arquivos de cobertura..."
+          find . -type f -name "coverage.cobertura.xml"
 
       - name: Upload coverage result as artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: '**/coverage.opencover.xml'
+          path: '**/coverage.cobertura.xml'
 
       - name: End SonarCloud Analysis
         run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
