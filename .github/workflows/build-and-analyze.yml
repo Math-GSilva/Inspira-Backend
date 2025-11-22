@@ -39,7 +39,7 @@ jobs:
             /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.verbose=true \
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.cobertura.xml" \
+            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
             /d:sonar.cs.vstest.reportsPaths="**/test_results.trx" \
             /d:sonar.coverage.exclusions="**/DTOs/**,**/Entities/**,**/Migrations/**,**/Program.cs,**/InspiraDbContext.cs,**/Inspira.Trainer/**,**/CloudinaryWrapper.cs"
       
@@ -56,7 +56,8 @@ jobs:
             --no-build \
             --logger "trx;LogFileName=test_results.trx" \
             --collect:"XPlat Code Coverage" \
-            --results-directory ./TestResults
+            --results-directory ./TestResults \
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
       - name: Verify coverage file path
         run: |
@@ -67,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: '**/coverage.cobertura.xml'
+          path: '**/coverage.opencover.xml'
 
       - name: End SonarCloud Analysis
         run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
