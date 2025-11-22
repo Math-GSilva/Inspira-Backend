@@ -44,7 +44,6 @@ namespace inspira_backend.API.Controllers
         }
 
         [HttpGet("{username}")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetProfile(string username)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));

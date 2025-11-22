@@ -20,7 +20,6 @@ namespace inspira_backend.API.Controllers
         private Guid GetCurrentUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         private IEnumerable<string> GetCurrentUserRoles() => User.FindAll(ClaimTypes.Role).Select(c => c.Value);
 
-        // GET: api/comentarios?obraDeArteId={id}
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetComentarios([FromQuery] Guid obraDeArteId)
@@ -29,7 +28,6 @@ namespace inspira_backend.API.Controllers
             return Ok(comentarios);
         }
 
-        // POST: api/comentarios
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Criar([FromBody] CreateComentarioDto dto)
@@ -42,7 +40,6 @@ namespace inspira_backend.API.Controllers
             return Ok(comentario);
         }
 
-        // DELETE: api/comentarios/{id}
         [HttpDelete("{id:guid}")]
         [Authorize]
         public async Task<IActionResult> Delete(Guid id)
@@ -55,7 +52,7 @@ namespace inspira_backend.API.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Forbid(ex.Message);
+                return StatusCode(403, new { message = ex.Message });
             }
         }
     }
