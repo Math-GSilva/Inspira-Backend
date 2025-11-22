@@ -8,9 +8,9 @@ namespace inspira_backend.Application.Services
 {
     public class CloudinaryMediaUploadService : IMediaUploadService
     {
-        private readonly Cloudinary _cloudinary;
+        private readonly ICloudinaryWrapper _cloudinary;
 
-        public CloudinaryMediaUploadService(Cloudinary cloudinary)
+        public CloudinaryMediaUploadService(ICloudinaryWrapper cloudinary)
         {
             _cloudinary = cloudinary;
         }
@@ -72,7 +72,7 @@ namespace inspira_backend.Application.Services
                 return ResourceType.Video;
             }
 
-            throw new ArgumentException("Tipo de conteúdo não mapeado para ResourceType do Cloudinary.");
+            throw new ArgumentException("Tipo de conteúdo não suportado.");
         }
     }
 }

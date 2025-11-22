@@ -57,6 +57,7 @@ builder.Services.AddSingleton(provider =>
 
     return new Cloudinary(account);
 });
+builder.Services.AddScoped<ICloudinaryWrapper, CloudinaryWrapper>();
 builder.Services.AddScoped<IMediaUploadService, CloudinaryMediaUploadService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -77,7 +78,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Secret"]))
     };
 });
 
@@ -130,3 +131,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+public partial class Program { }
