@@ -5,7 +5,6 @@ using inspira_backend.Infra;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
-using Xunit;
 
 namespace Inspira.IntegrationTests.Controllers
 {

@@ -2,7 +2,6 @@
 using CloudinaryDotNet.Actions;
 using inspira_backend.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 
 namespace inspira_backend.Application.Services
 {

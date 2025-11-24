@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace inspira_backend.Domain.Entities
 {
-    /// <summary>
-    /// Entidade que representa uma publicação na tabela 'ObrasDeArte'.
-    /// </summary>
     [Table("ObrasDeArte")]
     public class ObraDeArte
     {

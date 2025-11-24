@@ -21,7 +21,6 @@ namespace inspira_backend.API.Controllers
         private IEnumerable<string> GetCurrentUserRoles() => User.FindAll(ClaimTypes.Role).Select(c => c.Value);
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GetComentarios([FromQuery] Guid obraDeArteId)
         {
             var comentarios = await _comentarioService.GetComentariosByObraDeArteIdAsync(obraDeArteId);

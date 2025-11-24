@@ -2,11 +2,6 @@
 using inspira_backend.Application.Interfaces;
 using inspira_backend.Domain.Entities;
 using inspira_backend.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace inspira_backend.Application.Services
 {
@@ -25,12 +20,12 @@ namespace inspira_backend.Application.Services
         {
             if (await _usuarioRepository.GetByUsernameAsync(request.Username) != null)
             {
-                return null; // "Usuário já existe"
+                return null;
             }
 
             if (await _usuarioRepository.GetByEmailAsync(request.Email) != null)
             {
-                return null; // "E-mail já cadastrado"
+                return null;
             }
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -57,7 +52,7 @@ namespace inspira_backend.Application.Services
 
             if (usuario == null || !BCrypt.Net.BCrypt.Verify(request.Password, usuario.SenhaHash))
             {
-                return null; // "Usuário ou senha inválidos"
+                return null;
             }
 
             var token = _jwtTokenGenerator.GenerateToken(usuario);

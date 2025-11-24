@@ -69,9 +69,9 @@
                 return await GetProfileByUsernameAsync(usuario.NomeUsuario, userId);
             }
 
-            public async Task<IEnumerable<UsuarioProfileDto>> SearchUsersAsync(string? query, Guid? categoriaPrincipal, Guid userId)
+            public async Task<IEnumerable<UsuarioProfileDto>> SearchUsersAsync(string? query, Guid? categoriaPrincipal, Guid currentUserId)
             {
-                var usuarios = await _usuarioRepository.SearchAsync(query, categoriaPrincipal, userId);
+                var usuarios = await _usuarioRepository.SearchAsync(query, categoriaPrincipal, currentUserId);
 
                 return usuarios.Select(u => new UsuarioProfileDto
                 {
@@ -79,7 +79,7 @@
                     Username = u.NomeUsuario,
                     NomeCompleto = u.NomeCompleto,
                     UrlFotoPerfil = u.UrlFotoPerfil,
-                    SeguidoPeloUsuarioAtual = u.Seguidores?.Any(seguidor => seguidor.SeguidorId.Equals(userId)) ?? false
+                    SeguidoPeloUsuarioAtual = u.Seguidores?.Any(seguidor => seguidor.SeguidorId.Equals(currentUserId)) ?? false
                 });
             }
 

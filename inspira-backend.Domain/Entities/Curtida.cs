@@ -8,10 +8,6 @@ using System.Threading.Tasks;
 
 namespace inspira_backend.Domain.Entities
 {
-    /// <summary>
-    /// Entidade de associação para curtidas, representando a tabela 'Curtidas'.
-    /// Possui uma chave primária composta (UsuarioId, ObraDeArteId).
-    /// </summary>
     [Table("Curtidas")]
     public class Curtida
     {

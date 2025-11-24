@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Xunit;
 
 namespace Inspira.IntegrationTests.Controllers
 {
@@ -48,7 +47,7 @@ namespace Inspira.IntegrationTests.Controllers
             using (var scope = _fixture.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<InspiraDbContext>();
-                context.Categorias.RemoveRange(context.Categorias); // Limpeza
+                context.Categorias.RemoveRange(context.Categorias);
                 await context.SaveChangesAsync();
 
                 await context.Categorias.AddRangeAsync(

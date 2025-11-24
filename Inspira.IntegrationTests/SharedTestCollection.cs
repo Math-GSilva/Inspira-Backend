@@ -1,6 +1,4 @@
-﻿using Xunit;
-
-namespace Inspira.IntegrationTests
+﻿namespace Inspira.IntegrationTests
 {
     [CollectionDefinition("IntegrationTests")]
     public class SharedTestCollection : ICollectionFixture<IntegrationTestFixture>

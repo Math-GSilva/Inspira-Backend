@@ -8,7 +8,7 @@ namespace inspira_backend.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Todas as ações de curtida exigem que o utilizador esteja autenticado
+    [Authorize]
     public class CurtidasController : ControllerBase
     {
         private readonly ICurtidaService _curtidaService;
@@ -20,8 +20,6 @@ namespace inspira_backend.API.Controllers
 
         private Guid GetCurrentUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-        // POST: api/curtidas
-        // Ação de "Curtir" uma obra de arte
         [HttpPost]
         public async Task<IActionResult> Curtir([FromBody] CreateCurtidaDto dto)
         {
@@ -33,8 +31,6 @@ namespace inspira_backend.API.Controllers
             return Ok(result);
         }
 
-        // DELETE: api/curtidas/{obraDeArteId}
-        // Ação de "Descurtir" uma obra de arte
         [HttpDelete("{obraDeArteId:guid}")]
         public async Task<IActionResult> Descurtir(Guid obraDeArteId)
         {

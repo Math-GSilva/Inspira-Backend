@@ -16,7 +16,6 @@ namespace inspira_backend.API.Controllers
         }
 
         [HttpGet("seguidores")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetSeguidores(Guid usuarioId)
         {
             var seguidores = await _seguidorService.GetSeguidoresAsync(usuarioId);
