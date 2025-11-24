@@ -7,12 +7,7 @@ using inspira_backend.Domain.Entities;
 using inspira_backend.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Inspira.Test
 {
@@ -217,7 +212,7 @@ namespace Inspira.Test
             await act.Should().ThrowAsync<UnauthorizedAccessException>()
                      .WithMessage("Apenas o autor pode editar a obra.");
 
-            _mockObraRepo.Verify(r => r.UpdateAsync(It.IsAny<ObraDeArte>()), Times.Never); // Não deve chamar o Update
+            _mockObraRepo.Verify(r => r.UpdateAsync(It.IsAny<ObraDeArte>()), Times.Never);
         }
 
         [Fact]

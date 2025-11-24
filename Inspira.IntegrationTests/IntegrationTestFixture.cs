@@ -1,5 +1,4 @@
-﻿using DotNet.Testcontainers.Builders;
-using inspira_backend.Application.Interfaces;
+﻿using inspira_backend.Application.Interfaces;
 using inspira_backend.Infra;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
-using Xunit;
 
 namespace Inspira.IntegrationTests
 {

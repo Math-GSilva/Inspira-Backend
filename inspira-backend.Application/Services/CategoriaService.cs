@@ -2,12 +2,6 @@
 using inspira_backend.Application.Interfaces;
 using inspira_backend.Domain.Entities;
 using inspira_backend.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace inspira_backend.Application.Services
 {
     public class CategoriaService : ICategoriaService

@@ -61,7 +61,6 @@ builder.Services.AddScoped<ICloudinaryWrapper, CloudinaryWrapper>();
 builder.Services.AddScoped<IMediaUploadService, CloudinaryMediaUploadService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["Secret"];
 
 builder.Services.AddAuthentication(options =>
 {

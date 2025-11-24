@@ -4,11 +4,6 @@ using inspira_backend.Application.Interfaces;
 using inspira_backend.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Inspira.Test
 {

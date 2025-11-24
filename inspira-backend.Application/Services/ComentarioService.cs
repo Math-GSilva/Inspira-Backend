@@ -2,11 +2,6 @@
 using inspira_backend.Application.Interfaces;
 using inspira_backend.Domain.Entities;
 using inspira_backend.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace inspira_backend.Application.Services
 {
@@ -26,7 +21,7 @@ namespace inspira_backend.Application.Services
         public async Task<ComentarioResponseDto?> CriarComentarioAsync(CreateComentarioDto dto, Guid userId)
         {
             var obraDeArte = await _obraDeArteRepository.GetByIdAsync(dto.ObraDeArteId);
-            if (obraDeArte == null) return null; // Obra não existe
+            if (obraDeArte == null) return null;
 
             var comentario = new Comentario
             {

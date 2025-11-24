@@ -1,11 +1,8 @@
 ﻿using FluentAssertions;
 using inspira_backend.Application.DTOs;
-using inspira_backend.Domain.Enums; // Para UserRole
-using inspira_backend.Infra;
-using Microsoft.Extensions.DependencyInjection;
+using inspira_backend.Domain.Enums;
 using System.Net;
 using System.Net.Http.Json;
-using Xunit;
 
 namespace Inspira.IntegrationTests.Controllers
 {

@@ -1,11 +1,6 @@
 ﻿using inspira_backend.Domain.Entities;
 using inspira_backend.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace inspira_backend.Infra.Repositories
 {

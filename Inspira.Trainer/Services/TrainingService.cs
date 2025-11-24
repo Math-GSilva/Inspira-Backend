@@ -2,16 +2,9 @@
 using Inspira.Trainer.Models;
 using Inspira.Trainer.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.ML;
 using Microsoft.ML.Trainers;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Inspira.Trainer.Services
 {

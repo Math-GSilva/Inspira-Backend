@@ -17,7 +17,6 @@ namespace inspira_backend.API.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var categorias = await _service.GetAllAsync();
@@ -25,7 +24,6 @@ namespace inspira_backend.API.Controllers
         }
 
         [HttpGet("{id:guid}")]
-        [AllowAnonymous]
         public async Task<IActionResult> GetById(Guid id)
         {
             var categoria = await _service.GetByIdAsync(id);
