@@ -1,102 +1,129 @@
 # 🎨 Inspira Backend
 
-> Plataforma de rede social para artistas com recomendação de conteúdo baseada em Inteligência Artificial.
+<div align="center">
 
-O **Inspira Backend** é uma API REST robusta construída em .NET 8 que auxilia plataforma onde artistas podem compartilhar suas obras (imagensk, vídeos e áudios), interagir com a comunidade e receber recomendações personalizadas através de um motor de Machine Learning (ML.NET).
+![Status do Projeto](https://img.shields.io/badge/Status-Em%20Desenvolvimento-green?style=for-the-badge)
+![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Available-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![CI/CD](https://img.shields.io/github/actions/workflow/status/math-gsilva/inspira-backend/build-and-analyze.yml?label=Build%20%26%20Test&style=for-the-badge)
 
-## 🚀 Funcionalidades
+</div>
 
-### 📱 API Principal
-- **Autenticação & Segurança**: Registro e Login com JWT (JSON Web Tokens) e controle de acesso baseado em Roles (Artista, Comum, Administrador).
-- **Gestão de Obras de Arte**: CRUD completo de obras, upload de mídia (imagens/vídeos) integrado com Cloudinary.
-- **Interação Social**:
-  - Curtir e descurtir obras.
-  - Seguir e deixar de seguir outros usuários.
-- **Feed Inteligente**: Endpoint de listagem de obras que ordena o conteúdo baseado na afinidade do usuário (calculada pela IA).
-- **Perfis de Usuário**: Personalização de perfil com bio, foto e links para redes sociais (Instagram, LinkedIn, Portfólio).
+<p align="center">
+  <b>Plataforma de rede social para artistas com recomendação de conteúdo baseada em Inteligência Artificial.</b>
+</p>
 
-### 🧠 Inspira.Trainer (IA)
-- **Serviço de Recomendação**: Um *Background Worker* (Azure Function) que processa periodicamente os dados de interação.
-- **Machine Learning**: Utiliza o algoritmo de **Fatoração de Matrizes (Matrix Factorization)** do ML.NET.
-- **Predição de Preferências**: Analisa o histórico de curtidas para calcular um `Score` de afinidade entre usuários e categorias de arte, personalizando o feed de cada usuário.
+---
+
+## 📖 Sobre o Projeto
+
+O **Inspira Backend** é uma API REST robusta desenvolvida para suportar uma rede social focada em artistas. O sistema permite o compartilhamento de obras (imagens, vídeos e áudios), interação social (curtidas, comentários, seguidores) e possui um diferencial técnico importante: um motor de recomendação personalizado.
+
+A solução implementa **Clean Architecture** para garantir desacoplamento e testabilidade, e utiliza **ML.NET** rodando em uma **Azure Function** para processar recomendações baseadas em filtragem colaborativa (Matrix Factorization).
+
+---
+
+## 🚀 Funcionalidades Principais
+
+### 📱 Core API (`inspira-backend.Api`)
+* **Autenticação Segura**: Login e Registro com **JWT (Bearer Token)** e criptografia BCrypt.
+* **Controle de Acesso (RBAC)**: Perfis de `Artista`, `Comum` e `Administrador`.
+* **Gestão de Conteúdo**: Upload de imagens e vídeos integrado com **Cloudinary**.
+* **Social**: Sistema completo de seguidores, curtidas e comentários.
+* **Feed Inteligente**: Endpoint que ordena obras baseado no *score* de afinidade do usuário gerado pela IA.
+
+### 🧠 Motor de IA (`Inspira.Trainer`)
+* **Arquitetura Serverless**: Implementado como uma **Azure Function** (Timer Trigger) que roda periodicamente.
+* **Machine Learning**: Utiliza o algoritmo de **Matrix Factorization** do ML.NET.
+* **Personalização**: Analisa o histórico de interações (curtidas) para prever quais categorias o usuário tem maior probabilidade de gostar, atualizando os pesos no banco de dados.
+
+---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- **Core**: C# .NET 8.0
-- **Arquitetura**: MVC
-- **Banco de Dados**: PostgreSQL 15
-- **ORM**: Entity Framework Core
-- **Machine Learning**: ML.NET (Microsoft.ML)
-- **Armazenamento de Mídia**: Cloudinary
-- **Containerização**: Docker & Docker Compose
-- **Testes**: xUnit, FluentAssertions, Moq
-- **CI/CD**: GitHub Actions
+Este projeto utiliza as tecnologias mais modernas do ecossistema .NET:
 
-## 📂 Estrutura do Projeto
+* **Linguagem & Framework**: .NET 8.0, C#.
+* **Banco de Dados**: PostgreSQL 15 (Utilizando EF Core).
+* **Arquitetura**: Clean Architecture (Domain, Application, Infra, API).
+* **IA/ML**: Microsoft.ML (ML.NET).
+* **Cloud & Deploy**: Azure Functions, Azure (Também tem suporte para Docker).
+* **Armazenamento**: Cloudinary (Media Management).
+* **Qualidade & Testes**:
+    * **xUnit, FluentAssertions, Moq**.
+    * **Testcontainers**: Testes de integração com banco de dados real em contêineres.
+    * **SonarCloud**: Análise estática de código e cobertura.
+    * **GitHub Actions**: Pipelines de CI/CD configurados.
 
-A solução segue os princípios da Clean Architecture:
+---
 
-- **inspira-backend.Api**: Camada de entrada (Controllers, Configurações).
-- **inspira-backend.Application**: Regras de negócio, Serviços, DTOs e Interfaces.
-- **inspira-backend.Domain**: Entidades, Enums e Interfaces de Repositório.
-- **inspira-backend.Infra**: Implementação de acesso a dados (EF Core), Repositórios e Integrações externas.
-- **Inspira.Trainer**: Projeto isolado (Azure Function) responsável pelo treinamento do modelo de IA.
-- **Inspira.Test/Inspira.IntegrationTests**: Testes unitários e de integração.
+## 📂 Estrutura da Solução
 
-## ⚙️ Pré-requisitos
+```bash
+inspira-backend/
+├── inspira-backend.Api/          # Entry point, Controllers, Configurações
+├── inspira-backend.Application/  # Casos de uso, Services, DTOs, Interfaces
+├── inspira-backend.Domain/       # Entidades, Enums, Interfaces de Repositório
+├── inspira-backend.Infra/        # Implementação EF Core, Repositórios, Cloudinary
+├── Inspira.Trainer/              # Azure Function para treinamento da IA
+├── Inspira.Test/                 # Testes Unitários
+└── Inspira.IntegrationTests/     # Testes de Integração (com Testcontainers)
+```
 
-Antes de começar, certifique-se de ter instalado:
-- [Docker](https://www.docker.com/) e Docker Compose
-- [.NET SDK 8.0](https://dotnet.microsoft.com/download) (opcional, para rodar fora do Docker)
-- Conta no [Cloudinary](https://cloudinary.com/) (para as credenciais de API)
+---
 
-## 🚀 Como Executar
+## ⚙️ Como Executar
 
-### Opção 1: Usando Docker (Recomendado)
+### Pré-requisitos
+* [Docker](https://www.docker.com/) e Docker Compose instalados.
+* (Opcional) .NET SDK 8.0 para rodar fora do Docker.
 
-O projeto já está configurado com `docker-compose` para subir a API e o Banco de Dados.
+### 🐳 Rodando com Docker (Recomendado)
 
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/seu-usuario/inspira-backend.git
-   cd inspira-backend
-   ```
+1.  **Clone o repositório**
+    ```bash
+    git clone [https://github.com/math-gsilva/inspira-backend.git](https://github.com/math-gsilva/inspira-backend.git)
+    cd inspira-backend
+    ```
 
-2. Configure as variáveis de ambiente:
-   Edite o arquivo `docker-compose.yml` ou crie um arquivo `.env` com suas credenciais reais (especialmente as do Cloudinary e JWT Secret).
+2.  **Configure as Variáveis de Ambiente**
+    Crie um arquivo `.env` na raiz ou edite o `docker-compose.yml` (não recomendado para produção) com suas credenciais:
+    * Credenciais do PostgreSQL.
+    * Credenciais do Cloudinary.
+    * `JwtSettings:Secret` (Deve ser uma string forte).
 
-3. Suba os containers:
-   ```bash
-   docker-compose up --build
-   ```
+3.  **Suba os containers**
+    ```bash
+    docker-compose up --build
+    ```
 
-A API estará disponível em: `http://localhost:8000` (Swagger em `/swagger`).
+4.  **Acesse a API**
+    * A API estará disponível em: `http://localhost:8000`
+    * Documentação Swagger: `http://localhost:8000/swagger`
 
-### Opção 2: Execução Manual
+### 🧪 Rodando os Testes
 
-1. Configure o `appsettings.json` na pasta `inspira-backend.Api` com sua string de conexão PostgreSQL e credenciais do Cloudinary.
+Para executar a suíte de testes (unitários e de integração):
 
-2. Aplique as migrações do banco de dados:
-   ```bash
-   dotnet ef database update --project inspira-backend.Infra --startup-project inspira-backend.Api
-   ```
+```bash
+dotnet test
+```
+*Nota: Os testes de integração utilizam Testcontainers, então é necessário ter o Docker rodando na máquina.*
 
-3. Execute a API:
-   ```bash
-   dotnet run --project inspira-backend.Api
-   ```
+---
 
-## 🔧 Configuração de Variáveis
+## 🔧 Configuração (`appsettings.json`)
 
-Certifique-se de configurar as seguintes chaves no seu `appsettings.json` ou variáveis de ambiente:
+Para rodar localmente sem Docker, configure o `appsettings.Development.json` na API e no Trainer:
 
 ```json
 {
   "ConnectionStrings": {
-    "InspiraDbConnection": "Host=localhost;Port=5432;Database=InspiraDB;Username=postgres;Password=postgres"
+    "InspiraDbConnection": "Host=localhost;Port=5432;Database=InspiraDB;Username=seu_user;Password=sua_senha"
   },
   "JwtSettings": {
-    "Secret": "SUA_CHAVE_SUPER_SECRETA_MUITO_LONGA_PARA_SEGURANCA",
+    "Secret": "SUA_CHAVE_PRIVADA_MUITO_SECRETA_E_LONGA",
     "Issuer": "InspiraBackend",
     "Audience": "InspiraFrontend",
     "ExpiryMinutes": 120
@@ -109,49 +136,26 @@ Certifique-se de configurar as seguintes chaves no seu `appsettings.json` ou var
 }
 ```
 
-## 🧠 O Serviço de IA (Inspira.Trainer)
+---
 
-O **Inspira.Trainer** é executado separadamente. Ele é configurado como uma **Azure Function** com gatilho de timer (`0 0 0 * * *`), rodando uma vez por dia para retreinar o modelo com os dados mais recentes.
+## 🤝 Contribuindo
 
-Para rodar localmente:
-1. Navegue até a pasta `Inspira.Trainer`.
-2. Configure o `local.settings.json` com a connection string do banco.
-3. Execute com `func start` (requer Azure Functions Core Tools) ou via Visual Studio.
+Contribuições são bem-vindas! Se você tiver sugestões de melhoria ou novas features:
 
-## 🧪 Testes
+1.  Faça um **Fork** do projeto.
+2.  Crie uma Branch: `git checkout -b feature/MinhaFeature`.
+3.  Faça o Commit: `git commit -m 'Adiciona MinhaFeature'`.
+4.  Faça o Push: `git push origin feature/MinhaFeature`.
+5.  Abra um **Pull Request**.
 
-O projeto possui testes unitários e de integração cobrindo serviços, controladores e repositórios.
+---
 
-Para rodar os testes:
-```bash
-dotnet test
-```
-
-## 🤝 Contribuição
-
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests.
-
-1. Faça um Fork do projeto
-2. Crie sua Feature Branch (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a Branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
-
-## 🙏 Agradecimentos
-
-Este projeto foi desenvolvido como parte do portfólio do curso de **Engenharia de Software** da **Católica SC em Joinville**.
-
-Agradeço aos professores, colegas e à instituição pelo suporte e conhecimento compartilhados durante o desenvolvimento deste sistema.
-
-## 📞 Contato
-
-**Matheus Gabriel da Silva**
-
-Entre em contato para tirar dúvidas sobre o projeto ou para oportunidades de networking:
-
-- 💼 [LinkedIn](https://www.linkedin.com/in/matheus-gabriel-da-silva-55bb88215/)
-- 🐙 [GitHub](https://github.com/Math-GSilva)
-
-## 📄 Licença
+## 📝 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+<div align="center">
+  <sub>Desenvolvido por <a href="https://github.com/math-gsilva">Math-GSilva</a>.</sub>
+</div>
