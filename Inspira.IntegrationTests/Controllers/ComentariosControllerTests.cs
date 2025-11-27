@@ -121,7 +121,7 @@ namespace Inspira.IntegrationTests.Controllers
 
             var response = await _client.PostAsJsonAsync("/api/Comentarios", dto);
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
             var comentario = await response.Content.ReadFromJsonAsync<ComentarioResponseDto>();
             comentario.Conteudo.Should().Be("Comentário de Teste");
             comentario.AutorId.Should().Be(userId);

@@ -45,7 +45,8 @@ namespace Inspira.IntegrationTests
                     
                     {"CloudinarySettings:CloudName", "cloud_fake"},
                     {"CloudinarySettings:ApiKey", "123456"},
-                    {"CloudinarySettings:ApiSecret", "abcdef"}
+                    {"CloudinarySettings:ApiSecret", "abcdef"},
+                    {"Serilog:WriteTo:1:Args:connectionString", "InstrumentationKey=00000000-0000-0000-0000-000000000000;IngestionEndpoint=https://localhost;LiveEndpoint=https://localhost"}
                 });
             });
 
