@@ -32,7 +32,7 @@ namespace Inspira.IntegrationTests.Controllers
 
             var response = await _client.PostAsJsonAsync("/api/Auth/register", request);
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var result = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
             result.Should().NotBeNull();
